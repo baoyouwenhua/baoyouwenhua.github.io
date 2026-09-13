@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>包游文化 · 官网</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei',Arial,sans-serif;background:#FFF;color:#1A1A2E;line-height:1.6}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 48px;background:#FFF;border-bottom:1px solid #F0F0F0;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:12px}
+.logo{font-size:22px;font-weight:700;letter-spacing:1px}
+.logo span{color:#4F46E5}
+.nav-links{display:flex;gap:24px;list-style:none;flex-wrap:wrap}
+.nav-links a{text-decoration:none;color:#4B5563;font-size:15px;font-weight:500;padding:4px 0;border-bottom:2px solid transparent;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:#4F46E5;border-bottom-color:#4F46E5}
+.page{display:none;padding:40px 24px 64px;max-width:1100px;margin:0 auto}
+.page.active{display:block}
+.page h1{font-size:32px;margin-bottom:8px}
+.page .subtitle{color:#6B7280;margin-bottom:28px;font-size:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:20px}
+.card{background:#F8F9FA;border-radius:16px;padding:28px 20px 24px;text-align:center;transition:.25s;border:1px solid #EEE;cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,.06);border-color:#4F46E5}
+.card .icon{font-size:40px;margin-bottom:12px;display:block}
+.card h3{font-size:18px;margin-bottom:6px}
+.card p{font-size:14px;color:#6B7280;margin-bottom:16px}
+.card .tag{display:inline-block;font-size:12px;padding:4px 14px;border-radius:20px;font-weight:600;background:#EEF2FF;color:#4F46E5}
+.card .tag.building{background:#FEF3C7;color:#D97706}
+.card .tag.service{background:#FCE7F3;color:#BE185D}
+.card .tag.free{background:#D1FAE5;color:#059669}
+.update-item{display:flex;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #F0F0F0}
+.update-item .date{color:#9CA3AF;font-size:14px;min-width:80px}
+.update-item .content{font-size:15px}
+.update-item .badge{font-size:12px;background:#4F46E5;color:#FFF;padding:2px 12px;border-radius:12px;margin-left:8px}
+.update-item .badge.立项{background:#F59E0B}
+.update-item .badge.里程碑{background:#10B981}
+.game-item{background:#F8F9FA;border-radius:14px;padding:20px 24px;border:1px solid #eee;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;transition:.2s}
+.game-item:hover{border-color:#4F46E5;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.game-item .info h3{font-size:18px;margin-bottom:4px}
+.game-item .info p{font-size:14px;color:#6b7280}
+.game-item .price{font-size:14px;color:#D97706;font-weight:600;margin-top:4px}
+.btn-play{background:#4F46E5;color:#fff;border:none;padding:8px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-play:hover{background:#4338CA}
+.btn-buy-game{background:#D97706;color:#fff;border:none;padding:8px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-left:8px}
+.btn-buy-game:hover{background:#B45309}
+.category{background:#fff;border-radius:14px;padding:14px 20px;margin-bottom:14px;border:1px solid #eee}
+.category-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0}
+.category-header h2{font-size:18px}
+.category-header .count{font-size:14px;color:#9CA3AF;font-weight:normal;margin-left:8px}
+.toggle-btn{background:#F0F0F5;border:none;padding:4px 16px;border-radius:20px;font-size:13px;color:#4B5563;cursor:pointer;font-weight:500}
+.comic-list{display:none;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid #F0F0F0}
+.comic-list.open{display:flex}
+.comic-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#F8F9FA;border-radius:10px;border:1px solid #eee}
+.comic-item:hover{border-color:#4F46E5;background:#F0F0FF}
+.comic-name{font-size:15px;font-weight:500}
+.comic-price{font-size:13px;color:#D97706;font-weight:600;margin-left:8px}
+.btn-buy{background:#4F46E5;color:#fff;border:none;padding:4px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500}
+.btn-buy:hover{background:#4338CA}
+.activity-card{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:20px;padding:40px 36px;text-align:center;border:2px solid #F59E0B;margin-bottom:24px}
+.activity-card .big-icon{font-size:64px;display:block;margin-bottom:12px}
+.activity-card h2{font-size:28px;color:#92400E;margin-bottom:8px}
+.activity-card .price-tag{font-size:20px;color:#78350F;background:#FFF7ED;display:inline-block;padding:8px 24px;border-radius:30px;margin:12px 0;font-weight:700}
+.activity-card .desc{color:#78350F;font-size:16px;margin:12px 0 20px}
+.activity-card .btn-buy-activity{background:#D97706;color:#fff;border:none;padding:14px 48px;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer}
+.activity-detail{background:#F8F9FA;border-radius:14px;padding:24px;border:1px solid #eee}
+.activity-detail h3{font-size:18px;margin-bottom:12px}
+.activity-detail ul{list-style:none;padding:0}
+.activity-detail ul li{padding:8px 0;border-bottom:1px solid #F0F0F0;color:#4B5563;font-size:15px}
+.activity-detail ul li:last-child{border-bottom:none}
+.activity-detail ul li::before{content:"✨ "}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:999;justify-content:center;align-items:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:28px 24px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h3{font-size:19px;margin-bottom:2px}
+.modal .comic-title{color:#4F46E5;font-weight:600;font-size:17px;margin-bottom:12px}
+.modal .price-display{color:#D97706;font-weight:700;font-size:18px;margin-bottom:8px}
+.modal .delivery-note{font-size:13px;color:#6B7280;background:#F3F4F6;padding:8px 12px;border-radius:8px;margin-bottom:8px}
+.modal label{display:block;margin-top:14px;font-weight:500;font-size:14px;color:#374151}
+.modal input{width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;margin-top:4px;background:#FAFAFA;font-family:inherit}
+.modal input:focus{border-color:#4F46E5;outline:none;background:#fff}
+.modal .btn-group{display:flex;gap:12px;margin-top:22px}
+.modal .btn-group button{flex:1;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.btn-confirm{background:#4F46E5;color:#fff}
+.btn-confirm:hover{background:#4338CA}
+.btn-cancel{background:#F3F4F6;color:#4B5563}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1F2937;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;display:none;z-index:1000;text-align:center;max-width:90%}
+.toast.show{display:block}
+.footer{text-align:center;padding:32px 24px;border-top:1px solid #F0F0F0;color:#9CA3AF;font-size:14px;margin-top:40px}
+.footer a{color:#4F46E5;text-decoration:none;cursor:pointer}
+.post-area{background:#F8F9FA;border-radius:14px;padding:20px 24px;margin-bottom:24px;border:1px solid #eee}
+.post-area label{display:block;font-weight:500;font-size:14px;color:#374151;margin-top:12px}
+.post-area input,.post-area textarea{width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;margin-top:4px;background:#FAFAFA;font-family:inherit}
+.post-area input:focus,.post-area textarea:focus{border-color:#4F46E5;outline:none;background:#fff}
+.post-area textarea{min-height:80px;resize:vertical}
+.btn-submit{background:#4F46E5;color:#fff;border:none;padding:12px 28px;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-top:16px}
+.btn-submit:hover{background:#4338CA}
+.placeholder-icon{font-size:64px;display:block;text-align:center;margin:20px 0 12px}
+.placeholder-text{text-align:center;color:#6B7280;font-size:18px}
+.placeholder-sub{text-align:center;color:#9CA3AF;font-size:14px}
+.service-card{background:linear-gradient(135deg,#E0E7FF,#C7D2FE);border-radius:20px;padding:40px 36px;text-align:center;border:2px solid #4F46E5;margin-bottom:24px}
+.service-card .big-icon{font-size:64px;display:block;margin-bottom:12px}
+.service-card h2{font-size:28px;color:#1E1B4B;margin-bottom:8px}
+.service-card .price-tag{font-size:20px;color:#312E81;background:#EEF2FF;display:inline-block;padding:8px 24px;border-radius:30px;margin:12px 0;font-weight:700}
+.service-card .desc{color:#312E81;font-size:16px;margin:12px 0 20px}
+.service-card .btn-service{background:#4F46E5;color:#fff;border:none;padding:14px 48px;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer}
+.service-detail{background:#F8F9FA;border-radius:14px;padding:24px;border:1px solid #eee}
+.service-detail h3{font-size:18px;margin-bottom:12px}
+.service-detail ul{list-style:none;padding:0}
+.service-detail ul li{padding:8px 0;border-bottom:1px solid #F0F0F0;color:#4B5563;font-size:15px}
+.service-detail ul li:last-child{border-bottom:none}
+.service-detail ul li::before{content:"✅ "}
+@media(max-width:768px){.navbar{padding:12px 20px;flex-direction:column;align-items:flex-start}.nav-links{gap:14px;font-size:14px}.page{padding:24px 16px 40px}.cards{grid-template-columns:1fr 1fr}.game-item{flex-direction:column;gap:12px;align-items:flex-start}}
+@media(max-width:480px){.cards{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+<div class="logo">🥟 <span>包游文化</span></div>
+<ul class="nav-links">
+<li><a class="active" data-page="home">首页</a></li>
+<li><a data-page="game">游戏</a></li>
+<li><a data-page="comic">漫画</a></li>
+<li><a data-page="activity">活动</a></li>
+<li><a data-page="service">网站服务</a></li>
+<li><a data-page="preview">预告</a></li>
+<li><a data-page="notice" onclick="window.open('https://docs.qq.com/doc/DSUNHQVJpQXhLeWJO?dver=','_blank')">公告</a></li>
+<li><a data-page="forum">论坛</a></li>
+<li><a data-page="company">公司</a></li>
+<li><a data-page="profile">个人中心</a></li>
+</ul>
+</nav>
+
+<div class="page active" id="page-home">
+<h1>用代码复原历史，<br>用创意<span style="color:#4F46E5">连接未来</span></h1>
+<p class="subtitle">我们是包游文化，一个由初一学生创立的小团队。做游戏、画漫画、写代码，把脑袋里的想法变成真的。</p>
+<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px">
+<a class="btn-play" onclick="switchPage('game')">🎮 进入游戏</a>
+<a class="btn-play" style="background:transparent;color:#4F46E5;border:2px solid #4F46E5" onclick="switchPage('comic')">📖 浏览漫画</a>
+</div>
+<h2 style="font-size:24px;margin-bottom:12px">我们的产品</h2>
+<div class="cards">
+<div class="card" onclick="showBuildingMsg()"><span class="icon">🥟</span><h3>古建复原</h3><p>故宫太和殿 · 点击放置模拟器</p><span class="tag building">制作中</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x1a3a9147','_blank')"><span class="icon">🏓</span><h3>乒乓球对战</h3><p>单人/双人 实时对战模拟</p><span class="tag">1元</span></div>
+<div class="card" onclick="window.open('https://html.cafe/xe7815370','_blank')"><span class="icon">🎯</span><h3>接住小球</h3><p>反应力挑战 · 接住掉落的小球</p><span class="tag">1元</span></div>
+<div class="card" onclick="window.open('https://html.cafe/xf643068a','_blank')"><span class="icon">♟️</span><h3>中国象棋</h3><p>双人/AI对战 · 悔棋求和</p><span class="tag free">免费</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x9ce0f690','_blank')"><span class="icon">⚫</span><h3>五子棋</h3><p>双人/AI对战 · 悔棋</p><span class="tag free">免费</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x35498ae7','_blank')"><span class="icon">🔫</span><h3>实弹轮盘</h3><p>心理博弈 · 三关挑战</p><span class="tag">1元</span></div>
+<div class="card" onclick="switchPage('comic')"><span class="icon">📖</span><h3>连载漫画</h3><p>目前公司主要产品线</p><span class="tag">连载中</span></div>
+<div class="card" onclick="switchPage('service')"><span class="icon">💻</span><h3>网站制作</h3><p>专业网站开发服务</p><span class="tag service">3~30元面议</span></div>
+<div class="card" onclick="switchPage('activity')"><span class="icon">🎉</span><h3>活动</h3><p>公司三周年 · 纪念卡包</p><span class="tag">进行中</span></div>
+</div>
+<h2 style="font-size:24px;margin-top:48px;margin-bottom:20px">📌 更新日志</h2>
+<div class="update-item"><span class="date">2026-09-13</span><span class="content">官网4.0版本更新，新增象棋、五子棋、实弹轮盘、网站制作服务、建议功能</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-11</span><span class="content">购买系统升级，接入FormSubmit，无需登录即可一键购买</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-06</span><span class="content">官网更新至 3.0 版本，优化漫画商城与活动页</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-04</span><span class="content">公司官网制作成功，正式上线</span><span class="badge 里程碑">里程碑</span></div>
+<div class="update-item"><span class="date">2026-09-03</span><span class="content">公司官网正式立项</span><span class="badge 立项">立项</span></div>
+</div>
+
+<div class="page" id="page-game">
+<h1>🎮 游戏中心</h1>
+<p class="subtitle">包游文化 · 所有游戏作品</p>
+<div class="game-item"><div class="info"><h3>🏓 乒乓球对战</h3><p>单人/双人 实时对战模拟</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/x1a3a9147" target="_blank" class="btn-play">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('乒乓球对战',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>🎯 接住小球</h3><p>反应力挑战 · 接住掉落的小球</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/xe7815370" target="_blank" class="btn-play">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('接住小球',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>♟️ 中国象棋</h3><p>双人/AI对战 · 悔棋 · 求和</p><div class="price">🆓 免费体验</div></div><a href="https://html.cafe/xf643068a" target="_blank" class="btn-play">开始游戏</a></div>
+<div class="game-item"><div class="info"><h3>⚫ 五子棋</h3><p>双人/AI对战 · 悔棋</p><div class="price">🆓 免费体验</div></div><a href="https://html.cafe/x9ce0f690" target="_blank" class="btn-play">开始游戏</a></div>
+<div class="game-item"><div class="info"><h3>🔫 实弹轮盘</h3><p>心理博弈 · 三关挑战 · 道具系统</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/x35498ae7" target="_blank" class="btn-play" style="background:#c41a1a">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('实弹轮盘',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>🏯 古建复原模拟器</h3><p>故宫太和殿 · 点击放置</p></div><a href="javascript:void(0)" class="btn-play" onclick="showBuildingMsg()" style="background:#D97706">制作中</a></div>
+</div>
+
+<div class="page" id="page-comic">
+<h1>📚 漫画商城</h1>
+<p class="subtitle">包游文化 · 点击展开分类，选择你想买的漫画</p>
+<div id="comicApp"></div>
+</div>
+
+<div class="page" id="page-activity">
+<h1>🎉 公司三周年 · 特别活动</h1>
+<p class="subtitle">包游文化成立三周年，限量纪念卡包发售！</p>
+<div class="activity-card">
+<span class="big-icon">🎴</span>
+<h2>包游文化三周年 · 纪念卡包</h2>
+<div class="price-tag">💰 1元 / 包（5张）</div>
+<p class="desc">为庆祝包游文化成立三周年，特别推出限量版纪念卡片！<br>每包内含 5 张精美卡片，随机包含稀有款！</p>
+<button class="btn-buy-activity" onclick="openActivityPurchase()">🔥 立即购买</button>
+</div>
+<div class="activity-detail">
+<h3>📦 卡包详情</h3>
+<ul>
+<li>每包 5 张卡片，随机组合</li>
+<li>包含公司经典角色、纪念插画、隐藏款</li>
+<li>限量发售，售完即止</li>
+<li>购买后请等待邮件确认</li>
+</ul>
+</div>
+</div>
+
+<div class="page" id="page-service">
+<h1>💻 网站制作服务</h1>
+<p class="subtitle">包游文化 · 专业网站开发</p>
+<div class="service-card">
+<span class="big-icon">💻</span>
+<h2>网站制作服务</h2>
+<div class="price-tag">💰 3~30元 · 价格面议</div>
+<p class="desc">需要网站？我们帮你做！<br>无论是个人主页、游戏官网还是产品展示页，都能搞定。</p>
+<button class="btn-service" onclick="openServicePurchase()">📩 咨询/下单</button>
+</div>
+<div class="service-detail">
+<h3>🛠️ 服务内容</h3>
+<ul>
+<li>静态网站开发（HTML/CSS/JS）</li>
+<li>响应式设计，手机电脑都能看</li>
+<li>GitHub Pages 免费部署</li>
+<li>价格 3~30 元，根据复杂度面议</li>
+<li>交付时间：下单后 1~2 周</li>
+</ul>
+</div>
+</div>
+
+<div class="page" id="page-preview">
+<span class="placeholder-icon">🔮</span>
+<p class="placeholder-text">新项目预告即将上线</p>
+<p class="placeholder-sub">包游文化 · 未来规划</p>
+</div>
+
+<div class="page" id="page-forum">
+<h1>💬 论坛</h1>
+<p class="subtitle">包游文化 · 留言交流区</p>
+<div class="post-area">
+<h2 style="margin-bottom:8px">📝 发布留言</h2>
+<label for="forumNick">昵称</label>
+<input type="text" id="forumNick" placeholder="输入你的昵称">
+<label for="forumMsg">留言内容</label>
+<textarea id="forumMsg" placeholder="想说什么？"></textarea>
+<button class="btn-submit" id="forumSubmit">🚀 发布留言</button>
+</div>
+<div class="post-area">
+<h2 style="margin-bottom:8px">💡 提交建议</h2>
+<label for="suggestName">署名</label>
+<input type="text" id="suggestName" placeholder="你的名字/昵称">
+<label for="suggestMsg">建议内容</label>
+<textarea id="suggestMsg" placeholder="请写下你的建议..."></textarea>
+<button class="btn-submit" id="suggestSubmit">📩 提交建议</button>
+</div>
+</div>
+
+<div class="page" id="page-company">
+<span class="placeholder-icon">🏢</span>
+<p class="placeholder-text">包游文化</p>
+<p class="placeholder-sub">成立于2023年 · 用代码创造世界</p>
+</div>
+
+<div class="page" id="page-profile">
+<span class="placeholder-icon">👤</span>
+<p class="placeholder-text">个人中心</p>
+<p class="placeholder-sub">未来将支持购买记录查询</p>
+</div>
+
+<div class="footer">© 2026 包游文化 · 用代码创造世界 &nbsp;|&nbsp; <a onclick="switchPage('forum')">论坛</a> · <a onclick="switchPage('company')">员工通道</a></div>
+
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal">
+<h3>📖 确认购买</h3>
+<div class="comic-title" id="modalComicName">——《商品名》</div>
+<div class="price-display" id="modalPrice">本次将支付：1元</div>
+<div class="delivery-note" id="modalDelivery">📦 交货时间：下周</div>
+<label for="buyerName">你的姓名</label>
+<input type="text" id="buyerName" placeholder="请输入姓名">
+<label for="buyerClass">班级</label>
+<input type="text" id="buyerClass" placeholder="例如：初一3班">
+<div class="btn-group">
+<button class="btn-cancel" id="btnCancel">取消</button>
+<button class="btn-confirm" id="btnConfirm">✅ 确认购买</button>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+function switchPage(pageId){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+const t=document.getElementById('page-'+pageId);
+if(t)t.classList.add('active');
+const l=document.querySelector('.nav-links a[data-page="'+pageId+'"]');
+if(l)l.classList.add('active');
+if(pageId==='comic')renderComics();
+}
+document.querySelectorAll('.nav-links a').forEach(a=>{
+a.addEventListener('click',function(e){
+if(this.dataset.page==='notice')return;
+e.preventDefault();
+switchPage(this.dataset.page);
+});
+});
+function showToast(msg){
+const t=document.getElementById('toast');
+t.textContent=msg;
+t.classList.add('show');
+clearTimeout(t._timer);
+t._timer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+function showBuildingMsg(){showToast('🏯 古建复原正在制作中，敬请期待！');}
+
+const FORUM_URL='https://docs.qq.com/sheet/DSWdtcndRVXRMV2Ry?tab=BB08J2&scode=';
+const modalOverlay=document.getElementById('modalOverlay');
+const modalComicName=document.getElementById('modalComicName');
+const modalPrice=document.getElementById('modalPrice');
+const modalDelivery=document.getElementById('modalDelivery');
+const buyerName=document.getElementById('buyerName');
+const buyerClass=document.getElementById('buyerClass');
+const btnConfirm=document.getElementById('btnConfirm');
+const btnCancel=document.getElementById('btnCancel');
+let currentProduct='',currentPrice=1,currentType='comic',confirmStep=0;
+
+function getDeliveryNote(){
+const d=new Date().getDay();
+if(d===0||d===6)return '📦 交货时间：下周一至周五';
+return '📦 交货时间：下周（工作日下单需等下周）';
+}
+function openPurchase(name,price,type){
+currentProduct=name;currentPrice=price;currentType=type;confirmStep=0;
+modalComicName.textContent='《'+name+'》';
+modalPrice.textContent='本次将支付：'+price+'元';
+modalPrice.style.color='#D97706';
+modalDelivery.textContent=getDeliveryNote();
+buyerName.value='';buyerClass.value='';
+btnConfirm.textContent='✅ 确认购买';
+modalOverlay.classList.add('show');
+}
+function openActivityPurchase(){openPurchase('包游三周年纪念卡包',1,'activity');}
+function openServicePurchase(){openPurchase('网站制作服务',0,'service');}
+function closeModal(){modalOverlay.classList.remove('show');confirmStep=0;}
+btnCancel.addEventListener('click',closeModal);
+modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal();});
+
+btnConfirm.addEventListener('click',function(){
+const name=buyerName.value.trim();
+const cls=buyerClass.value.trim();
+if(!name)return showToast('⚠️ 请填写姓名');
+if(!cls)return showToast('⚠️ 请填写班级');
+if(confirmStep===0){
+confirmStep=1;
+btnConfirm.textContent='⚠️ 点击确认支付';
+modalPrice.textContent='本次将支付：'+currentPrice+'元，确认后视为订单已提交';
+modalPrice.style.color='#DC2626';
+return;
+}
+const now=new Date();
+const timeStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+fetch('https://formsubmit.co/ajax/hk_3@qq.com',{
+method:'POST',
+headers:{'Content-Type':'application/json','Accept':'application/json'},
+body:JSON.stringify({_subject:'新购买：'+currentProduct,姓名:name,班级:cls,商品:currentProduct,价格:currentPrice+'元',类型:currentType,交货时间:getDeliveryNote(),时间:timeStr})
+}).then(r=>{
+if(r.ok){showToast('✅ 购买信息已发送！等待确认');closeModal();}
+else showToast('❌ 发送失败，请重试');
+}).catch(()=>showToast('❌ 网络错误，请重试'));
+});
+
+const categories=[
+{name:'😂 搞笑漫画',comics:[{t:'搞笑漫画 #1',p:1},{t:'搞笑漫画 #2',p:1},{t:'搞笑漫画 #3',p:1}]},
+{name:'🥟 包子漫画',comics:[{t:'包子漫画 #1',p:1.5},{t:'包子漫画 #2',p:1.5},{t:'包子漫画的地图',p:0.5}]},
+{name:'⭐ 包星漫画',comics:Array.from({length:50},(_,i)=>({t:'包星漫画 #'+(i+1),p:1.5}))},
+{name:'🍜 美食漫画',comics:[{t:'美食漫画 #1',p:1.5},{t:'美食漫画 #2',p:1.5}]},
+{name:'🐨 考拉上学记',comics:[{t:'考拉上学记 #1',p:1}]}
+];
+
+function renderComics(){
+const c=document.getElementById('comicApp');
+if(!c||c.dataset.rendered)return;
+c.dataset.rendered='true';
+categories.forEach((cat,idx)=>{
+const w=document.createElement('div');
+w.className='category';
+const h=document.createElement('div');
+h.className='category-header';
+h.innerHTML='<h2>'+cat.name+' <span class="count">（'+cat.comics.length+' 部）</span></h2><button class="toggle-btn" data-idx="'+idx+'">展开</button>';
+w.appendChild(h);
+const list=document.createElement('div');
+list.className='comic-list';
+list.dataset.idx=idx;
+cat.comics.forEach(x=>{
+const item=document.createElement('div');
+item.className='comic-item';
+const left=document.createElement('div');
+left.innerHTML='<span class="comic-name">'+x.t+'</span><span class="comic-price">'+x.p+'元</span>';
+const btn=document.createElement('button');
+btn.className='btn-buy';
+btn.textContent='购买';
+btn.addEventListener('click',e=>{e.stopPropagation();openPurchase(x.t,x.p,'comic');});
+item.appendChild(left);
+item.appendChild(btn);
+list.appendChild(item);
+});
+w.appendChild(list);
+c.appendChild(w);
+const tb=h.querySelector('.toggle-btn');
+tb.addEventListener('click',e=>{
+e.stopPropagation();
+const open=list.classList.toggle('open');
+tb.textContent=open?'收起':'展开';
+});
+});
+}
+
+document.addEventListener('DOMContentLoaded',function(){
+const fs=document.getElementById('forumSubmit');
+if(fs)fs.addEventListener('click',function(){
+const nick=document.getElementById('forumNick').value.trim();
+const msg=document.getElementById('forumMsg').value.trim();
+if(!nick)return showToast('⚠️ 请填写昵称');
+if(!msg)return showToast('⚠️ 请填写留言内容');
+const now=new Date();
+const timeStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+navigator.clipboard.writeText(timeStr+'\t'+nick+'\t'+msg).then(()=>{
+showToast('✅ 留言已复制，即将跳转表格粘贴');
+setTimeout(()=>window.open(FORUM_URL,'_blank'),1000);
+}).catch(()=>{
+showToast('📋 请手动在表格填入：'+nick+' | '+msg);
+setTimeout(()=>window.open(FORUM_URL,'_blank'),1200);
+});
+document.getElementById('forumMsg').value='';
+});
+const ss=document.getElementById('suggestSubmit');
+if(ss)ss.addEventListener('click',function(){
+const name=document.getElementById('suggestName').value.trim();
+const msg=document.getElementById('suggestMsg').value.trim();
+if(!name)return showToast('⚠️ 请填写署名');
+if(!msg)return showToast('⚠️ 请填写建议内容');
+const now=new Date();
+const timeStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+fetch('https://formsubmit.co/ajax/hk_3@qq.com',{
+method:'POST',
+headers:{'Content-Type':'application/json','Accept':'application/json'},
+body:JSON.stringify({_subject:'新建议',署名:name,建议内容:msg,时间:timeStr})
+}).then(r=>{
+if(r.ok){showToast('✅ 建议已发送！');document.getElementById('suggestMsg').value='';}
+else showToast('❌ 发送失败，请重试');
+}).catch(()=>showToast('❌ 网络错误，请重试'));
+});
+});
+
+renderComics();
+</script>
+</body>
+</html>
