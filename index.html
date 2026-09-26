@@ -1,0 +1,1507 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-store">
+<title>包游文化 · 官网</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Microsoft YaHei',Arial,sans-serif;background:#FFF;color:#1A1A2E;line-height:1.6}
+.navbar{display:flex;justify-content:space-between;align-items:center;padding:16px 48px;background:#FFF;border-bottom:1px solid #F0F0F0;position:sticky;top:0;z-index:100;flex-wrap:wrap;gap:12px}
+.logo{font-size:22px;font-weight:700;letter-spacing:1px}
+.logo span{color:#4F46E5}
+.nav-links{display:flex;gap:24px;list-style:none;flex-wrap:wrap;align-items:center}
+.nav-links a{text-decoration:none;color:#4B5563;font-size:15px;font-weight:500;padding:4px 0;border-bottom:2px solid transparent;cursor:pointer}
+.nav-links a:hover,.nav-links a.active{color:#4F46E5;border-bottom-color:#4F46E5}
+.page{display:none;padding:40px 24px 64px;max-width:1100px;margin:0 auto}
+.page.active{display:block}
+.page h1{font-size:32px;margin-bottom:8px}
+.page .subtitle{color:#6B7280;margin-bottom:28px;font-size:16px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:24px;margin-top:20px}
+.card{background:#F8F9FA;border-radius:16px;padding:28px 20px 24px;text-align:center;transition:.25s;border:1px solid #EEE;cursor:pointer}
+.card:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(0,0,0,.06);border-color:#4F46E5}
+.card .icon{font-size:40px;margin-bottom:12px;display:block}
+.card h3{font-size:18px;margin-bottom:6px}
+.card p{font-size:14px;color:#6B7280;margin-bottom:16px}
+.card .tag{display:inline-block;font-size:12px;padding:4px 14px;border-radius:20px;font-weight:600;background:#EEF2FF;color:#4F46E5}
+.card .tag.building{background:#FEF3C7;color:#D97706}
+.card .tag.service{background:#FCE7F3;color:#BE185D}
+.card .tag.free{background:#D1FAE5;color:#059669}
+.card .tag.presale{background:#DBEAFE;color:#1D4ED8}
+.update-item{display:flex;align-items:baseline;gap:16px;padding:14px 0;border-bottom:1px solid #F0F0F0}
+.update-item .date{color:#9CA3AF;font-size:14px;min-width:80px}
+.update-item .content{font-size:15px}
+.update-item .badge{font-size:12px;background:#4F46E5;color:#FFF;padding:2px 12px;border-radius:12px;margin-left:8px}
+.update-item .badge.立项{background:#F59E0B}
+.update-item .badge.里程碑{background:#10B981}
+.game-item{background:#F8F9FA;border-radius:14px;padding:20px 24px;border:1px solid #eee;display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;transition:.2s}
+.game-item:hover{border-color:#4F46E5;box-shadow:0 4px 12px rgba(0,0,0,.05)}
+.game-item .info h3{font-size:18px;margin-bottom:4px}
+.game-item .info p{font-size:14px;color:#6b7280}
+.game-item .price{font-size:14px;color:#D97706;font-weight:600;margin-top:4px}
+.btn-play{background:#4F46E5;color:#fff;border:none;padding:8px 24px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-play:hover{background:#4338CA}
+.btn-buy-game{background:#D97706;color:#fff;border:none;padding:8px 20px;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;margin-left:8px}
+.btn-buy-game:hover{background:#B45309}
+.category{background:#fff;border-radius:14px;padding:14px 20px;margin-bottom:14px;border:1px solid #eee}
+.category-header{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0}
+.category-header h2{font-size:18px}
+.category-header .count{font-size:14px;color:#9CA3AF;font-weight:normal;margin-left:8px}
+.toggle-btn{background:#F0F0F5;border:none;padding:4px 16px;border-radius:20px;font-size:13px;color:#4B5563;cursor:pointer;font-weight:500}
+.comic-list{display:none;flex-direction:column;gap:6px;margin-top:12px;padding-top:12px;border-top:1px solid #F0F0F0}
+.comic-list.open{display:flex}
+.comic-item{display:flex;justify-content:space-between;align-items:center;padding:10px 14px;background:#F8F9FA;border-radius:10px;border:1px solid #eee}
+.comic-item:hover{border-color:#4F46E5;background:#F0F0FF}
+.comic-name{font-size:15px;font-weight:500}
+.comic-author{font-size:12px;color:#9CA3AF;margin-left:6px}
+.comic-price{font-size:13px;color:#D97706;font-weight:600;margin-left:8px}
+.btn-buy{background:#4F46E5;color:#fff;border:none;padding:4px 18px;border-radius:8px;font-size:13px;cursor:pointer;font-weight:500}
+.btn-buy:hover{background:#4338CA}
+.activity-card{background:linear-gradient(135deg,#FEF3C7,#FDE68A);border-radius:20px;padding:40px 36px;text-align:center;border:2px solid #F59E0B;margin-bottom:24px}
+.activity-card .big-icon{font-size:64px;display:block;margin-bottom:12px}
+.activity-card h2{font-size:28px;color:#92400E;margin-bottom:8px}
+.activity-card .price-tag{font-size:20px;color:#78350F;background:#FFF7ED;display:inline-block;padding:8px 24px;border-radius:30px;margin:12px 0;font-weight:700}
+.activity-card .desc{color:#78350F;font-size:16px;margin:12px 0 20px}
+.activity-card .btn-buy-activity{background:#D97706;color:#fff;border:none;padding:14px 48px;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer}
+.activity-card.presale{background:linear-gradient(135deg,#DBEAFE,#BFDBFE);border-color:#1D4ED8}
+.activity-card.presale h2{color:#1E3A8A}
+.activity-card.presale .price-tag{color:#1E3A8A;background:#EFF6FF}
+.activity-card.presale .desc{color:#1E3A8A}
+.activity-card.presale .btn-buy-activity{background:#1D4ED8}
+.activity-detail{background:#F8F9FA;border-radius:14px;padding:24px;border:1px solid #eee}
+.activity-detail h3{font-size:18px;margin-bottom:12px}
+.activity-detail ul{list-style:none;padding:0}
+.activity-detail ul li{padding:8px 0;border-bottom:1px solid #F0F0F0;color:#4B5563;font-size:15px}
+.activity-detail ul li:last-child{border-bottom:none}
+.activity-detail ul li::before{content:"✨ "}
+.modal-overlay{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.4);z-index:999;justify-content:center;align-items:center}
+.modal-overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:28px 24px;max-width:380px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.modal h3{font-size:19px;margin-bottom:2px}
+.modal .comic-title{color:#4F46E5;font-weight:600;font-size:17px;margin-bottom:12px}
+.modal .price-display{color:#D97706;font-weight:700;font-size:18px;margin-bottom:8px}
+.modal .delivery-note{font-size:13px;color:#6B7280;background:#F3F4F6;padding:8px 12px;border-radius:8px;margin-bottom:8px}
+.modal label{display:block;margin-top:14px;font-weight:500;font-size:14px;color:#374151}
+.modal input{width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;margin-top:4px;background:#FAFAFA;font-family:inherit}
+.modal input:focus{border-color:#4F46E5;outline:none;background:#fff}
+.modal .btn-group{display:flex;gap:12px;margin-top:22px}
+.modal .btn-group button{flex:1;paddi.modal .btn-group button{flex:1;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer}
+.btn-confirm{background:#4F46E5;color:#fff}
+.btn-confirm:hover{background:#4338CA}
+.btn-cancel{background:#F3F4F6;color:#4B5563}
+.toast{position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#1F2937;color:#fff;padding:12px 24px;border-radius:12px;font-size:14px;display:none;z-index:1000;text-align:center;max-width:90%}
+.toast.show{display:block}
+.footer{text-align:center;padding:32px 24px;border-top:1px solid #F0F0F0;color:#9CA3AF;font-size:14px;margin-top:40px}
+.footer a{color:#4F46E5;text-decoration:none;cursor:pointer}
+.post-area{background:#F8F9FA;border-radius:14px;padding:20px 24px;margin-bottom:24px;border:1px solid #eee}
+.post-area label{display:block;font-weight:500;font-size:14px;color:#374151;margin-top:12px}
+.post-area input,.post-area textarea{width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;margin-top:4px;background:#FAFAFA;font-family:inherit}
+.post-area input:focus,.post-area textarea:focus{border-color:#4F46E5;outline:none;background:#fff}
+.post-area textarea{min-height:80px;resize:vertical}
+.btn-submit{background:#4F46E5;color:#fff;border:none;padding:12px 28px;border-radius:10px;font-size:16px;font-weight:600;cursor:pointer;margin-top:16px}
+.btn-submit:hover{background:#4338CA}
+.placeholder-icon{font-size:64px;display:block;text-align:center;margin:20px 0 12px}
+.placeholder-text{text-align:center;color:#6B7280;font-size:18px}
+.placeholder-sub{text-align:center;color:#9CA3AF;font-size:14px}
+.service-card{background:linear-gradient(135deg,#E0E7FF,#C7D2FE);border-radius:20px;padding:40px 36px;text-align:center;border:2px solid #4F46E5;margin-bottom:24px}
+.service-card .big-icon{font-size:64px;display:block;margin-bottom:12px}
+.service-card h2{font-size:28px;color:#1E1B4B;margin-bottom:8px}
+.service-card .price-tag{font-size:20px;color:#312E81;background:#EEF2FF;display:inline-block;padding:8px 24px;border-radius:30px;margin:12px 0;font-weight:700}
+.service-card .desc{color:#312E81;font-size:16px;margin:12px 0 20px}
+.service-card .btn-service{background:#4F46E5;color:#fff;border:none;padding:14px 48px;border-radius:12px;font-size:18px;font-weight:700;cursor:pointer}
+.service-detail{background:#F8F9FA;border-radius:14px;padding:24px;border:1px solid #eee}
+.service-detail h3{font-size:18px;margin-bottom:12px}
+.service-detail ul{list-style:none;padding:0}
+.service-detail ul li{padding:8px 0;border-bottom:1px solid #F0F0F0;color:#4B5563;font-size:15px}
+.service-detail ul li:last-child{border-bottom:none}
+.service-detail ul li::before{content:"✅ "}
+.user-card{background:#fff;border-radius:14px;padding:20px;border:1px solid #eee;margin-bottom:14px}
+.user-card .uname{font-weight:700;font-size:16px}
+.user-card .umeta{font-size:13px;color:#9CA3AF;margin-top:2px}
+.user-card .uactions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.user-card .uactions button{padding:6px 14px;border:none;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.user-card .promote{background:#10B981;color:#fff}
+.user-card .demote{background:#F59E0B;color:#fff}
+.staff-tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap}
+.staff-tabs button{padding:10px 20px;background:#F3F4F6;border:2px solid transparent;border-radius:10px;font-size:14px;font-weight:600;cursor:pointer;color:#4B5563}
+.staff-tabs button.active{background:#4F46E5;color:#fff;border-color:#4F46E5}
+.staff-section{display:none}
+.staff-section.active{display:block}
+.task-card{background:#fff;border-radius:14px;padding:20px;border:1px solid #eee;margin-bottom:14px}
+.task-card h4{font-size:17px;margin-bottom:8px}
+.task-card .meta{font-size:13px;color:#9CA3AF;margin-bottom:10px}
+.task-card .body{font-size:15px;line-height:1.6;white-space:pre-wrap}
+.doc-card{background:#fff;border-radius:14px;padding:20px;border:1px solid #eee;margin-bottom:14px}
+.doc-card h4{font-size:17px;margin-bottom:8px}
+.doc-card .meta{font-size:13px;color:#9CA3AF;margin-bottom:10px}
+.doc-card .body{font-size:15px;line-height:1.6;white-space:pre-wrap}
+.msg-bubble{background:#fff;border-radius:14px;padding:14px 18px;border:1px solid #eee;margin-bottom:10px}
+.msg-bubble .who{font-weight:600;font-size:14px;margin-bottom:4px}
+.msg-bubble .who .badge{font-size:11px;padding:1px 8px;border-radius:10px;margin-left:6px}
+.msg-bubble .who .badge.staff{background:#D1FAE5;color:#059669}
+.msg-bubble .who .badge.admin{background:#FEF3C7;color:#D97706}
+.msg-bubble .time{font-size:12px;color:#9CA3AF;margin-bottom:6px}
+.msg-bubble .body{font-size:15px;line-height:1.6;white-space:pre-wrap}
+.reply-box{margin-left:24px;padding:8px 12px;border-left:3px solid #4F46E5;background:#FAFAFA;border-radius:8px;margin-top:8px}
+.reply-box .rmeta{font-size:12px;color:#86868b;margin-bottom:4px}
+.reply-box .rmeta strong{color:#4F46E5}
+.reply-box .rbody{font-size:14px;white-space:pre-wrap;word-break:break-word}
+.post-actions{margin-top:10px;display:flex;gap:12px;font-size:13px}
+.post-actions span{cursor:pointer}
+.post-actions .like{color:#4F46E5}
+.post-actions .reply{color:#6B7280}
+.del-btn{background:#ff3b30;color:#fff;border:none;border-radius:6px;padding:2px 10px;font-size:12px;cursor:pointer;margin-left:8px}
+.hidden{display:none !important}
+.spinner{width:40px;height:40px;border:4px solid #E5E7EB;border-top-color:#4F46E5;border-radius:50%;animation:spin .8s linear infinite;margin:30px auto}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{text-align:center;color:#9CA3AF;font-size:14px;padding-bottom:30px}
+.friend-section{margin-bottom:24px}
+.friend-section h3{font-size:16px;margin-bottom:10px;color:#374151}
+.friend-item{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#fff;border:1px solid #eee;border-radius:12px;margin-bottom:8px;cursor:pointer;transition:.2s}
+.friend-item:hover{border-color:#4F46E5;background:#F8F9FF}
+.friend-item .fname{font-weight:600;font-size:15px}
+.friend-item .flast{font-size:13px;color:#9CA3AF;margin-top:2px}
+.friend-item .fright{display:flex;align-items:center;gap:8px}
+.red-dot{display:inline-block;width:8px;height:8px;background:#FF3B30;border-radius:50%;margin-right:4px}
+.unread-num{background:#FF3B30;color:#fff;font-size:11px;padding:1px 6px;border-radius:10px;font-weight:600}
+.req-actions{display:flex;gap:6px}
+.req-actions button{padding:5px 12px;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer}
+.req-accept{background:#10B981;color:#fff}
+.req-reject{background:#F3F4F6;color:#4B5563}
+.add-friend-bar{display:flex;gap:8px;margin-bottom:20px}
+.add-friend-bar input{flex:1;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:14px;background:#FAFAFA;font-family:inherit}
+.add-friend-bar input:focus{border-color:#4F46E5;outline:none;background:#fff}
+.add-friend-bar button{padding:10px 20px;background:#4F46E5;color:#fff;border:none;border-radius:10px;font-size:14px;font-w.add-friend-bar button{font-weight:600;cursor:pointer}
+.add-friend-bar button:hover{background:#4338CA}
+.chat-header{display:flex;align-items:center;gap:12px;padding:0 0 16px;border-bottom:1px solid #F0F0F0;margin-bottom:16px}
+.chat-back{background:#F3F4F6;border:none;padding:8px 14px;border-radius:8px;font-size:14px;font-weight:600;cursor:pointer;color:#4B5563}
+.chat-back:hover{background:#E5E7EB}
+.chat-title{font-size:17px;font-weight:700;flex:1}
+.chat-report-btn{background:#FEF2F2;color:#DC2626;border:1px solid #FECACA;padding:6px 14px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer}
+.chat-box{padding:14px;background:#EDEDED;border-radius:14px;min-height:320px;max-height:440px;overflow-y:auto;margin-bottom:12px}
+.chat-msg{display:flex;margin-bottom:12px}
+.chat-msg.me{justify-content:flex-end}
+.chat-msg.other{justify-content:flex-start}
+.chat-bubble{max-width:72%;padding:10px 14px;border-radius:10px;font-size:15px;line-height:1.5;word-break:break-word;position:relative;cursor:pointer}
+.chat-msg.me .chat-bubble{background:#95EC69;color:#1A1A2E}
+.chat-msg.other .chat-bubble{background:#fff;color:#1A1A2E}
+.chat-bubble.pending{background:#FEF3C7 !important;color:#92400E !important}
+.chat-bubble.blocked{background:#FEE2E2 !important;color:#991B1B !important;text-decoration:line-through}
+.chat-bubble .bstatus{font-size:11px;margin-left:6px;opacity:.7}
+.chat-input-bar{display:flex;gap:8px}
+.chat-input-bar input{flex:1;padding:11px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;background:#FAFAFA;font-family:inherit}
+.chat-input-bar input:focus{border-color:#4F46E5;outline:none;background:#fff}
+.chat-input-bar button{padding:11px 24px;background:#4F46E5;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer}
+.chat-input-bar button:hover{background:#4338CA}
+.report-modal .modal textarea{width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:14px;margin-top:4px;background:#FAFAFA;font-family:inherit;min-height:80px;resize:vertical}
+.report-modal .modal textarea:focus{border-color:#4F46E5;outline:none;background:#fff}
+.report-ctx{display:none;margin-top:12px;padding:12px;background:#FAFAFA;border-radius:10px}
+.report-ctx .ctx-line{margin-bottom:8px}
+.report-ctx .ctx-who{font-size:12px;font-weight:600}
+.report-ctx .ctx-time{font-size:11px;color:#9CA3AF;margin-left:6px}
+.report-ctx .ctx-body{background:#fff;border:1px solid #eee;border-radius:8px;padding:8px 10px;margin-top:4px;font-size:14px;white-space:pre-wrap;word-break:break-word}
+@media(max-width:768px){.navbar{padding:12px 20px;flex-direction:column;align-items:flex-start}.nav-links{gap:14px;font-size:14px}.page{padding:24px 16px 40px}.cards{grid-template-columns:1fr 1fr}.game-item{flex-direction:column;gap:12px;align-items:flex-start}}
+@media(max-width:480px){.cards{grid-template-columns:1fr}}
+</style>
+</head><body><nav class="navbar">
+<div class="logo">🥟 <span>包游文化</span></div>
+<ul class="nav-links">
+<li><a class="active" data-page="home">首页</a></li>
+<li><a data-page="game">游戏</a></li>
+<li><a data-page="comic">漫画</a></li>
+<li><a data-page="activity">活动</a></li>
+<li><a data-page="service">网站服务</a></li>
+<li><a data-page="preview">预告</a></li>
+<li><a data-page="notice" onclick="window.open('https://docs.qq.com/doc/DSUNHQVJpQXhLeWJO?dver=','_blank')">公告</a></li>
+<li><a data-page="forum">论坛</a></li>
+<li><a data-page="friends">好友</a></li>
+<li><a data-page="suggest">建议</a></li>
+<li><a data-page="company">公司</a></li>
+<li><a data-page="admin" id="adminNavBtn" style="display:none;">管理</a></li>
+<li><a data-page="staff" id="staffNavBtn" style="display:none;">员工</a></li>
+<li><a data-page="login" id="loginNavBtn">登录</a></li>
+</ul>
+</nav>
+
+<div class="page active" id="page-home">
+<h1>用代码复原历史，<br>用创意<span style="color:#4F46E5">连接未来</span></h1>
+<p class="subtitle">我们是包游文化，一个由初一学生创立的小团队。做游戏、画漫画、写代码，把脑袋里的想法变成真的。</p>
+<div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:32px">
+<a class="btn-play" onclick="switchPage('game')">🎮 进入游戏</a>
+<a class="btn-play" style="background:transparent;color:#4F46E5;border:2px solid #4F46E5" onclick="switchPage('comic')">📖 浏览漫画</a>
+</div>
+<h2 style="font-size:24px;margin-bottom:12px">我们的产品</h2>
+<div class="cards">
+<div class="card" onclick="showBuildingMsg()"><span class="icon">🥟</span><h3>古建复原</h3><p>故宫太和殿 · 点击放置模拟器</p><span class="tag building">制作中</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x1a3a9147','_blank')"><span class="icon">🏓</span><h3>乒乓球对战</h3><p>单人/双人 实时对战模拟</p><span class="tag">1元</span></div>
+<div class="card" onclick="window.open('https://html.cafe/xe7815370','_blank')"><span class="icon">🎯</span><h3>接住小球</h3><p>反应力挑战 · 接住掉落的小球</p><span class="tag">1元</span></div>
+<div class="card" onclick="window.open('https://html.cafe/xf643068a','_blank')"><span class="icon">♟️</span><h3>中国象棋</h3><p>双人/AI对战 · 悔棋求和</p><span class="tag free">免费</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x9ce0f690','_blank')"><span class="icon">⚫</span><h3>五子棋</h3><p>双人/AI对战 · 悔棋</p><span class="tag free">免费</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x35498ae7','_blank')"><span class="icon">🔫</span><h3>实弹轮盘</h3><p>心理博弈 · 三关挑战</p><span class="tag">1元</span></div>
+<div class="card" onclick="window.open('https://html.cafe/x2f5d8ae1','_blank')"><span class="icon">🚀</span><h3>坦克对战</h3><p>炮弹反弹2次 · 联机/房间码</p><span class="tag">1元</span></div>
+<div class="card" onclick="switchPage('comic')"><span class="icon">📖</span><h3>连载漫画</h3><p>目前公司主要产品线</p><span class="tag">连载中</span></div>
+<div class="card" onclick="switchPage('service')"><span class="icon">💻</span><h3>网站制作</h3><p>专业网站开发服务</p><span class="tag service">3~30元面议</span></div>
+<div class="card" onclick="switchPage('activity')"><span class="icon">🎉</span><h3>活动</h3><p>公司三周年 · 纪念卡包</p><span class="tag">进行中</span></div>
+</div>
+<h2 style="font-size:24px;margin-top:48px;margin-bottom:20px">📌 更新日志</h2>
+<div class="update-item"><span class="date">2026-09-26</span><span class="content">管理后台新增惩罚管理，只有管理员黄凯可封禁；坦克对战上线</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-25</span><span class="content">交友系统上线，支持好友、私信、举报、管理员审核</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-25</span><span class="content">论坛支持点赞/回复，员工专区新增管理员系统</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-24</span><span class="content">用户系统上线，支持注册登录、员工专区、管理后台</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-18</span><span class="content">论坛升级为Supabase实时论坛，新增独立建议页面</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-13</span><span class="content">官网4.0版本更新，新增象棋、五子棋、实弹轮盘、网站制作服务</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-11</span><span class="content">购买系统升级，接入FormSubmit，无需登录即可一键购买</span><span class="badge 里程碑">版本更新</span></div>
+<div class="update-item"><span class="date">2026-09-04</span><span class="content">公司官网制作成功，正式上线</span><span class="badge 里程碑">里程碑</span></div>
+</div>
+
+<div class="page" id="page-game">
+<h1>🎮 游戏中心</h1>
+<p class="subtitle">包游文化 · 所有游戏作品</p>
+<div class="game-item"><div class="info"><h3>🏓 乒乓球对战</h3><p>单人/双人 实时对战模拟</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/x1a3a9147" target="_blank" class="btn-play">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('乒乓球对战',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>🎯 接住小球</h3><p>反应力挑战 · 接住掉落的小球</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/xe7815370" target="_blank" class="btn-play">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('接住小球',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>♟️ 中国象棋</h3><p>双人/AI对战 · 悔棋 · 求和</p><div class="price">🆓 免费体验</div></div><a href="https://html.cafe/xf643068a" target="_blank" class="btn-play">开始游戏</a></div>
+<div class="game-item"><div class="info"><h3>⚫ 五子棋</h3><p>双人/AI对战 · 悔棋</p><div class="price">🆓 免费体验</div></div><a href="https://html.cafe/x9ce0f690" target="_blank" class="btn-play">开始游戏</a></div>
+<div class="game-item"><div class="info"><h3>🔫 实弹轮盘</h3><p>心理博弈 · 三关挑战 · 道具系统</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/x35498ae7" target="_blank" class="btn-play" style="background:#c41a1a">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('实弹轮盘',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>🚀 坦克对战</h3><p>炮弹反弹2次 · 第2次碰墙爆炸 · 联机/房间码</p><div class="price">💰 1元</div></div><div><a href="https://html.cafe/x2f5d8ae1" target="_blank" class="btn-play">开始游戏</a><button class="btn-buy-game" onclick="openPurchase('坦克对战',1,'game')">购买</button></div></div>
+<div class="game-item"><div class="info"><h3>🏯 古建复原模拟器</h3><p>故宫太和殿 · 点击放置</p></div><a href="javascript:void(0)" class="btn-play" onclick="showBuildingMsg()" style="background:#D97706">制作中</a></div>
+</div>
+
+<div class="page" id="page-comic">
+<h1>📚 漫画商城</h1>
+<p class="subtitle">包游文化 · 点击展开分类，选择你想买的漫画</p>
+<div id="comicApp"></div>
+</div>
+
+<div class="page" id="page-activity">
+<h1>🎉 公司三周年 · 特别活动</h1>
+<p class="subtitle">包游文化 · 限量周边与纪念品</p>
+<div class="activity-card">
+<span class="big-icon">🎴</span>
+<h2>包游文化三周年 · 纪念卡包</h2>
+<div class="price-tag">💰 1元 / 包（5张）</div>
+<p class="desc">为庆祝包游文化成立三周年，特别推出限量版纪念卡片！<br>每包内含 5 张精美卡片，随机包含稀有款！</p>
+<button class="btn-buy-activity" onclick="openActivityPurchase()">🔥 立即购买</button>
+</div>
+<div class="activity-card presale">
+<span class="big-icon">🧩</span>
+<h2>包子周边 · 拼豆</h2>
+<div class="price-tag">💰 1.5元 / 个</div>
+<p class="desc">一个很可爱的包子，拼豆材质。<br>现在预售中，欢迎预订！</p>
+<button class="btn-buy-activity" onclick="openPresalePurchase()">🧩 立即预订</button>
+</div>
+<div class="activity-detail">
+<h3>📦 卡包详情</h3>
+<ul>
+<li>每包 5 张卡片，随机组合</li>
+<li>包含公司经典角色、纪念插画、隐藏款</li>
+<li>限量发售，售完即止</li>
+<li>购买后请等待邮件确认</li>
+</ul>
+</div>
+</div>
+
+<div class="page" id="page-service">
+<h1>💻 网站制作服务</h1>
+<p class="subtitle">包游文化 · 专业网站开发</p>
+<div class="service-card">
+<span class="big-icon">💻</span>
+<h2>网站制作服务</h2>
+<div class="price-tag">💰 3~30元 · 价格面议</div>
+<p class="desc">需要网站？我们帮你做！<br>无论是个人主页、游戏官网还是产品展示页，都能搞定。</p>
+<button class="btn-service" onclick="openServicePurchase()">📩 咨询/下单</button>
+</div>
+<div class="service-detail">
+<h3>🛠️ 服务内容</h3>
+<ul>
+<li>静态网站开发（HTML/CSS/JS）</li>
+<li>响应式设计，手机电脑都能看</li>
+<li>GitHub Pages 免费部署</li>
+<li>价格 3~30 元，根据复杂度面议</li>
+<li>交付时间：下单后 1~2 周</li>
+</ul>
+</div>
+</div>
+
+<div class="page" id="page-preview">
+<span class="placeholder-icon">🔮</span>
+<p class="placeholder-text">新项目预告即将上线</p>
+<p class="placeholder-sub">包游文化 · 未来规划</p>
+</div>
+
+<div class="page" id="page-forum">
+<h1>💬 包游论坛</h1>
+<p class="subtitle">包游文化 · 留言交流区</p>
+<div class="post-area">
+<input id="forumName" placeholder="你的昵称（可不填，默认匿名）" maxlength="20">
+<textarea id="forumContent" placeholder="说点什么……" maxlength="2000"></textarea>
+<button class="btn-submit" id="forumSubmit">发布</button>
+<div id="forumMsgTip" style="font-size:13px;margin-top:8px;"></div>
+</div>
+<div id="forumPosts"></div>
+<div class="post-area" style="margin-top:20px;">
+<input id="adminPwd" type="password" placeholder="管理员密码" style="display:inline-block;width:60%;">
+<button class="btn-submit" id="adminBtn" style="margin-left:8px;" onclick="adminLogin()">管理员登录</button>
+<button class="btn-submit" id="adminLogoutBtn" style="margin-left:8px;background:#6B7280;display:none;" onclick="adminLogout()">退出管理</button>
+<div id="adminMsg" style="font-size:13px;margin-top:8px;"></div>
+</div>
+</div>
+
+<div class="page" id="page-friends">
+<h1>👥 好友</h1>
+<p class="subtitle">包游文化 · 好友与私信</p>
+<div id="friendsLoading" class="hidden">
+<div class="spinner"></div>
+<p class="loading-text">正在搜索你的好友…</p>
+</div>
+<div id="friendsContent" class="hidden">
+<div class="add-friend-bar">
+<input id="addFriendInput" placeholder="输入对方用户名，加为好友">
+<button onclick="addFriend()">➕ 添加</button>
+</div>
+<div id="friendRequestsBox" class="friend-section hidden">
+<h3>📨 待处理好友请求</h3>
+<div id="friendRequestsList"></div>
+</div>
+<div class="friend-section">
+<h3>👥 我的好友</h3>
+<div id="friendsList"></div>
+</div>
+<div class="friend-section">
+<h3>💬 会话</h3>
+<div id="chatList"></div>
+</div>
+</div>
+</div>
+
+<div class="page" id="page-chat">
+<div class="chat-header">
+<button class="chat-back" onclick="switchPage('friends')">← 返回</button>
+<div class="chat-title" id="chatTitle">—</div>
+<button class="chat-report-btn" onclick="openReportCurrentUser()">🚩 举报</button>
+</div>
+<div class="chat-box" id="chatBox"></div>
+<div class="chat-input-bar">
+<input id="chatInput" placeholder="输入消息…" maxlength="500" onkeydown="if(event.key==='Enter')sendChatMsg()">
+<button onclick="sendChatMsg()">发送</button>
+</div>
+</div>
+
+<div class="page" id="page-suggest">
+<h1>💡 提交建议</h1>
+<p class="subtitle">包游文化 · 你的建议很重要</p>
+<div class="post-area">
+<label for="suggestName">署名</label>
+<input type="text" id="suggestName" placeholder="你的名字/昵称">
+<label for="suggestMsg">建议内容</label>
+<textarea id="suggestMsg" placeholder="请写下你的建议..."></textarea>
+<button class="btn-submit" id="suggestSubmit">📩 提交建议</button>
+</div>
+</div>
+
+<div class="page" id="page-company">
+<span class="placeholder-icon">🏢</span>
+<p class="placeholder-text">包游文化</p>
+<p class="placeholder-sub">成立于2023年 · 用代码创造世界</p>
+</div>
+
+<div class="page" id="page-login">
+<h1>👤 登录 / 注册</h1>
+<p class="subtitle">包游文化 · 登录后可发帖、购买、查看记录</p>
+<div id="authView" class="post-area" style="max-width:440px;margin:0 auto;">
+<div style="display:flex;gap:8px;margin-bottom:20px;">
+<button id="tabLogin" class="btn-submit" style="flex:1;margin-top:0;">登录</button>
+<button id="tabRegister" class="btn-submit" style="flex:1;margin-top:0;background:#F3F4F6;color:#4B5563;">注册</button>
+</div>
+<div id="formLogin">
+<label>用户名</label>
+<input id="loginName" placeholder="输入用户名">
+<label>密码</label>
+<input id="loginPwd" type="password" placeholder="输入密码">
+<button class="btn-submit" id="btnLogin" style="width:100%;">登录</button>
+</div>
+<div id="formRegister" style="display:none;">
+<label>用户名（2-20字，中文可）</label>
+<input id="regName" placeholder="登录用的名字">
+<label>密码（至少4位）</label>
+<input id="regPwd" type="password" placeholder="设置密码">
+<label>真实姓名</label>
+<input id="regRealName" placeholder="购买时显示的名字">
+<label>班级</label>
+<input id="regClass" placeholder="例如：初一3班">
+<button class="btn-submit" id="btnRegister" style="width:100%;">注册</button>
+</div>
+<div class="msg" id="authMsg" style="text-align:center;font-size:13px;margin-top:12px;min-height:20px;"></div>
+</div>
+<div id="userView" class="post-area" style="max-width:440px;margin:0 auto;display:none;text-align:center;">
+<div style="font-size:56px;margin-bottom:8px;">👤</div>
+<div style="font-size:22px;font-weight:700;" id="showName">—</div>
+<div style="font-size:14px;color:#86868b;margin-bottom:6px;" id="showRole">普通用户</div>
+<div style="font-size:13px;color:#9CA3AF;margin-bottom:20px;" id="showInfo"></div>
+<button class="btn-submit" id="btnGoProfile">个人中心</button>
+<button class="btn-submit" id="btnLogout" style="background:#F3F4F6;color:#4B5563;">退出登录</button>
+</div>
+</div>
+
+<div class="page" id="page-profile">
+<h1>👤 个人中心</h1>
+<p class="subtitle">包游文化 · 你的资料和购买记录</p>
+<div id="profileContent"></div>
+</div>
+
+<div class="page" id="page-staff">
+<h1>🏢 员工专区</h1>
+<p class="subtitle">包游文化 · 内部系统</p>
+<div class="staff-tabs">
+<button class="active" data-staff-tab="tasks">📋 任务面板</button>
+<button data-staff-tab="docs">📁 内部资料</button>
+<button data-staff-tab="forum">💬 员工论坛</button>
+<button data-staff-tab="sales">📊 我的销售</button>
+</div>
+<div class="staff-section active" id="staffSection-tasks"></div>
+<div class="staff-section" id="staffSection-docs"></div>
+<div class="staff-section" id="staffSection-forum"></div>
+<div class="staff-section" id="staffSection-sales"></div>
+</div>
+
+<div class="page" id="page-admin">
+<h1>🔴 管理后台</h1>
+<p class="subtitle">包游文化 · 管理员专用</p>
+<div class="staff-tabs">
+<button class="active" data-admin-tab="users">👥 用户管理</button>
+<button data-admin-tab="purchases">💰 交易记录</button>
+<button data-admin-tab="tasks">📋 任务编辑</button>
+<button data-admin-tab="docs">📁 资料编辑</button>
+<button data-admin-tab="review">🔍 消息审核</button>
+<button data-admin-tab="reports">🚩 举报处理</button>
+<button data-admin-tab="punish">🔨 惩罚管理</button>
+</div>
+<div class="staff-section active" id="adminSection-users"></div>
+<div class="staff-section" id="adminSection-purchases"></div>
+<div class="staff-section" id="adminSection-tasks"></div>
+<div class="staff-section" id="adminSection-docs"></div>
+<div class="staff-section" id="adminSection-review"></div>
+<div class="staff-section" id="adminSection-reports"></div>
+<div class="staff-section" id="adminSection-punish"></div>
+</div>
+
+<div class="footer">© 2026 包游文化 · 用代码创造世界 &nbsp;|&nbsp; <a onclick="switchPage('forum')">论坛</a> · <a onclick="switchPage('company')">员工通道</a></div>
+
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal">
+<h3>📖 确认购买</h3>
+<div class="comic-title" id="modalComicName">——《商品名》</div>
+<div class="price-display" id="modalPrice">本次将支付：1元</div>
+<div class="delivery-note" id="modalDelivery">📦 交货时间：下周</div>
+<label for="buyerName">你的姓名</label>
+<input type="text" id="buyerName" placeholder="请输入姓名">
+<label for="buyerClass">班级</label>
+<input type="text" id="buyerClass" placeholder="例如：初一3班">
+<div class="btn-group">
+<button class="btn-cancel" id="btnCancel">取消</button>
+<button class="btn-confirm" id="btnConfirm">✅ 确认购买</button>
+</div>
+</div>
+</div>
+
+<div class="modal-overlay report-modal" id="reportOverlay">
+<div class="modal">
+<h3>🚩 举报</h3>
+<div class="comic-title" id="reportTarget">——</div>
+<label>举报理由</label>
+<textarea id="reportReason" placeholder="请描述举报原因（如辱骂、广告、诈骗等）"></textarea>
+<div class="btn-group">
+<button class="btn-cancel" onclick="closeReport()">取消</button>
+<button class="btn-confirm" onclick="submitReport()">✅ 提交举报</button>
+</div>
+</div>
+</div>
+
+<div class="toast" id="toast"></div><script>
+const SUPABASE_URL="https://gklxkyznfegslkgefzas.supabase.co";
+const SUPABASE_KEY="sb_publishable_1DNkeFcclVSVM19I6Q2AsA__DAIVlfg";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const ADMIN_PWD="1108";
+const ADMIN_NAME="黄凯";
+
+/* ============ 工具函数 ============ */
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function fmt(t){return t?new Date(t).toLocaleString("zh-CN",{hour12:false}).slice(0,16):"";}
+function showToast(msg){
+const t=document.getElementById('toast');
+t.textContent=msg;
+t.classList.add('show');
+clearTimeout(t._timer);
+t._timer=setTimeout(()=>t.classList.remove('show'),3000);
+}
+function showBuildingMsg(){showToast('🏯 古建复原正在制作中，敬请期待！');}
+
+/* ============ 身份判断 ============ */
+function getCurrentUser(){try{return JSON.parse(localStorage.getItem('baoyou_user')||'null');}catch(e){return null;}}
+function setCurrentUser(u){localStorage.setItem('baoyou_user',JSON.stringify(u));}
+function clearCurrentUser(){localStorage.removeItem('baoyou_user');}
+function isHuangKai(){
+const u=getCurrentUser();
+return !!(u&&u.username==='黄凯'&&u.role==='admin');
+}
+function canPunish(){return isHuangKai();}
+
+/* ============ 导航更新 ============ */
+function updateLoginNav(){
+const u=getCurrentUser();
+const nav=document.getElementById('loginNavBtn');
+if(nav)nav.textContent=u?u.username:'登录';
+const ab=document.getElementById('adminNavBtn');
+const sbn=document.getElementById('staffNavBtn');
+if(ab)ab.style.display=(u&&u.role==='admin')?'inline-block':'none';
+if(sbn)sbn.style.display=(u&&(u.role==='staff'||u.role==='admin'))?'inline-block':'none';
+}
+
+/* ============ 页面切换 ============ */
+function switchPage(pageId){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+document.querySelectorAll('.nav-links a').forEach(a=>a.classList.remove('active'));
+const t=document.getElementById('page-'+pageId);
+if(t)t.classList.add('active');
+const l=document.querySelector('.nav-links a[data-page="'+pageId+'"]');
+if(l)l.classList.add('active');
+if(pageId==='comic')renderComics();
+if(pageId==='forum')loadPosts();
+if(pageId==='login')renderAuthView();
+if(pageId==='profile')renderProfile();
+if(pageId==='staff')loadStaffData();
+if(pageId==='admin')loadAdminData();
+if(pageId==='friends')loadFriendsPage();
+if(pageId==='chat')renderChatPage();
+}
+
+document.querySelectorAll('.nav-links a').forEach(a=>{
+a.addEventListener('click',function(e){
+if(this.dataset.page==='notice')return;
+e.preventDefault();
+switchPage(this.dataset.page);
+});
+});
+
+/* ============ 登录/注册 ============ */
+function renderAuthView(){
+const u=getCurrentUser();
+const authView=document.getElementById('authView');
+const userView=document.getElementById('userView');
+if(!authView||!userView)return;
+if(u){
+authView.style.display='none';
+userView.style.display='block';
+document.getElementById('showName').textContent=u.username;
+const roleText=u.role==='admin'?'🔴 管理员':u.role==='staff'?'🟢 员工':'普通用户';
+document.getElementById('showRole').textContent=roleText;
+document.getElementById('showInfo').textContent='真名：'+u.real_name+'　班级：'+(u.class_name||'未填');
+}else{
+authView.style.display='block';
+userView.style.display='none';
+}
+}
+
+document.getElementById('tabLogin').addEventListener('click',function(){
+document.getElementById('formLogin').style.display='block';
+document.getElementById('formRegister').style.display='none';
+this.style.background='#4F46E5';this.style.color='#fff';
+document.getElementById('tabRegister').style.background='#F3F4F6';
+document.getElementById('tabRegister').style.color='#4B5563';
+});
+document.getElementById('tabRegister').addEventListener('click',function(){
+document.getElementById('formLogin').style.display='none';
+document.getElementById('formRegister').style.display='block';
+this.style.background='#4F46E5';this.style.color='#fff';
+document.getElementById('tabLogin').style.background='#F3F4F6';
+document.getElementById('tabLogin').style.color='#4B5563';
+});
+
+document.getElementById('btnLogin').addEventListener('click',async function(){
+const name=document.getElementById('loginName').value.trim();
+const pwd=document.getElementById('loginPwd').value;
+const msg=document.getElementById('authMsg');
+msg.textContent='';msg.style.color='#DC2626';
+if(!name||!pwd){msg.textContent='请填写用户名和密码';return;}
+this.disabled=true;this.textContent='登录中...';
+try{
+const {data,error}=await sb.rpc('login_user',{p_username:name,p_password:pwd});
+if(error)throw error;
+if(!data.ok){msg.textContent=data.error;return;}
+setCurrentUser(data);
+msg.style.color='#059669';msg.textContent='登录成功';
+updateLoginNav();renderAuthView();
+if(data.role==='admin')switchPage('admin');
+else if(data.role==='staff')switchPage('staff');
+else switchPage('profile');
+}catch(e){msg.textContent='登录失败：'+e.message;}
+finally{this.disabled=false;this.textContent='登录';}
+});
+
+document.getElementById('btnRegister').addEventListener('click',async function(){
+const name=document.getElementById('regName').value.trim();
+const pwd=document.getElementById('regPwd').value;
+const real=document.getElementById('regRealName').value.trim();
+const cls=document.getElementById('regClass').value.trim();
+const msg=document.getElementById('authMsg');
+msg.textContent='';msg.style.color='#DC2626';
+if(!name||!pwd||!real){msg.textContent='用户名、密码、真名都要填';return;}
+this.disabled=true;this.textContent='注册中...';
+try{
+const {data,error}=await sb.rpc('register_user',{p_username:name,p_password:pwd,p_realname:real,p_class:cls});
+if(error)throw error;
+if(!data.ok){msg.textContent=data.error;return;}
+setCurrentUser(data);
+msg.style.color='#059669';msg.textContent='注册成功，已自动登录';
+updateLoginNav();renderAuthView();
+switchPage('profile');
+}catch(e){msg.textContent='注册失败：'+e.message;}
+finally{this.disabled=false;this.textContent='注册';}
+});
+
+document.getElementById('btnLogout').addEventListener('click',function(){
+clearCurrentUser();
+updateLoginNav();renderAuthView();
+document.getElementById('authMsg').textContent='已退出登录';
+switchPage('home');
+});
+
+document.getElementById('btnGoProfile').addEventListener('click',()=>switchPage('profile'));
+
+/* ============ 购买系统 ============ */
+const modalOverlay=document.getElementById('modalOverlay');
+const modalComicName=document.getElementById('modalComicName');
+const modalPrice=document.getElementById('modalPrice');
+const modalDelivery=document.getElementById('modalDelivery');
+const buyerName=document.getElementById('buyerName');
+const buyerClass=document.getElementById('buyerClass');
+const btnConfirm=document.getElementById('btnConfirm');
+const btnCancel=document.getElementById('btnCancel');
+let currentProduct='',currentPrice=1,currentType='comic',currentAuthor='',confirmStep=0;
+
+function getDeliveryNote(){
+const d=new Date().getDay();
+if(d===0||d===6)return '📦 交货时间：下周一至周五';
+return '📦 交货时间：下周（工作日下单需等下周）';
+}
+function openPurchase(name,price,type,author){
+currentProduct=name;currentPrice=price;currentType=type;currentAuthor=author||'';confirmStep=0;
+modalComicName.textContent=modalComicName.textContent='《'+name+'》';
+modalPrice.textContent='本次将支付：'+price+'元';
+modalPrice.style.color='#D97706';
+modalDelivery.textContent=getDeliveryNote();
+const u=getCurrentUser();
+if(u){buyerName.value=u.real_name||'';buyerClass.value=u.class_name||'';}
+else{buyerName.value='';buyerClass.value='';}
+btnConfirm.textContent='✅ 确认购买';
+modalOverlay.classList.add('show');
+}
+function openActivityPurchase(){openPurchase('包游三周年纪念卡包',1,'activity');}
+function openPresalePurchase(){openPurchase('包子周边拼豆',1.5,'presale');}
+function openServicePurchase(){openPurchase('网站制作服务',0,'service');}
+function closeModal(){modalOverlay.classList.remove('show');confirmStep=0;}
+btnCancel.addEventListener('click',closeModal);
+modalOverlay.addEventListener('click',e=>{if(e.target===modalOverlay)closeModal();});
+
+btnConfirm.addEventListener('click',function(){
+const name=buyerName.value.trim();
+const cls=buyerClass.value.trim();
+if(!name)return showToast('⚠️ 请填写姓名');
+if(!cls)return showToast('⚠️ 请填写班级');
+if(confirmStep===0){
+confirmStep=1;
+btnConfirm.textContent='⚠️ 点击确认支付';
+modalPrice.textContent='本次将支付：'+currentPrice+'元，确认后视为订单已提交';
+modalPrice.style.color='#DC2626';
+return;
+}
+const now=new Date();
+const timeStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+const u=getCurrentUser();
+sb.rpc('record_purchase',{p_username:u?u.username:null,p_name:name,p_class:cls,p_product:currentProduct,p_price:currentPrice,p_author:currentAuthor,p_type:currentType}).catch(()=>{});
+fetch('https://formsubmit.co/ajax/hk_3@qq.com',{
+method:'POST',
+headers:{'Content-Type':'application/json','Accept':'application/json'},
+body:JSON.stringify({_subject:'新购买：'+currentProduct,姓名:name,班级:cls,商品:currentProduct,价格:currentPrice+'元',类型:currentType,交货时间:getDeliveryNote(),时间:timeStr})
+}).then(r=>{
+if(r.ok){showToast('✅ 购买信息已发送！等待确认');closeModal();}
+else showToast('❌ 发送失败，请重试');
+}).catch(()=>showToast('❌ 网络错误，请重试'));
+});
+
+/* ============ 漫画数据 ============ */
+const categories=[
+{name:'😂 搞笑漫画',comics:[
+{t:'搞笑漫画 #1',p:1,a:'林誉'},
+{t:'搞笑漫画 #2',p:1,a:'林誉'},
+{t:'搞笑漫画 #3',p:1,a:'林誉'}
+]},
+{name:'🥟 包子漫画',comics:[
+{t:'包子漫画 #1',p:1.5,a:''},
+{t:'包子漫画 #2',p:1.5,a:''},
+{t:'包子漫画的地图',p:0.5,a:''}
+]},
+{name:'⭐ 包星漫画',comics:Array.from({length:60},(_,i)=>({t:'包星漫画 #'+(i+1),p:1.5,a:'李昀硕'}))},
+{name:'🍜 美食漫画',comics:[
+{t:'美食漫画 #1',p:1.5,a:'李昀硕'},
+{t:'美食漫画 #2',p:1.5,a:'李昀硕'}
+]},
+{name:'🐨 考拉上学记',comics:[
+{t:'考拉上学记 #1',p:1,a:'李昀硕'}
+]}
+];
+
+function renderComics(){
+const c=document.getElementById('comicApp');
+if(!c||c.dataset.rendered)return;
+c.dataset.rendered='true';
+categories.forEach((cat,idx)=>{
+const w=document.createElement('div');
+w.className='category';
+const h=document.createElement('div');
+h.className='category-header';
+h.innerHTML='<h2>'+cat.name+' <span class="count">（'+cat.comics.length+' 部）</span></h2><button class="toggle-btn" data-idx="'+idx+'">展开</button>';
+w.appendChild(h);
+const list=document.createElement('div');
+list.className='comic-list';
+list.dataset.idx=idx;
+cat.comics.forEach(x=>{
+const item=document.createElement('div');
+item.className='comic-item';
+const left=document.createElement('div');
+left.innerHTML='<span class="comic-name">'+x.t+'</span>'+(x.a?'<span class="comic-author">by '+x.a+'</span>':'')+'<span class="comic-price">'+x.p+'元</span>';
+const btn=document.createElement('button');
+btn.className='btn-buy';
+btn.textContent='购买';
+btn.addEventListener('click',e=>{e.stopPropagation();openPurchase(x.t,x.p,'comic',x.a);});
+item.appendChild(left);
+item.appendChild(btn);
+list.appendChild(item);
+});
+w.appendChild(list);
+c.appendChild(w);
+const tb=h.querySelector('.toggle-btn');
+tb.addEventListener('click',e=>{
+e.stopPropagation();
+const open=list.classList.toggle('open');
+tb.textContent=open?'收起':'展开';
+});
+});
+}
+
+/* ============ 个人中心 ============ */
+async function renderProfile(){
+const box=document.getElementById('profileContent');
+const u=getCurrentUser();
+if(!u){box.innerHTML='<p style="text-align:center;color:#9CA3AF;padding:40px 0;">请先登录</p>';return;}
+box.innerHTML='<div class="post-area" style="max-width:500px;margin:0 auto 20px;"><h3 style="margin-bottom:12px;">📝 修改资料</h3><label>真实姓名</label><input id="profReal" value="'+esc(u.real_name||'')+'"><label>班级</label><input id="profClass" value="'+esc(u.class_name||'')+'"><label>当前密码（必填才能保存）</label><input id="profPwd" type="password" placeholder="输入密码验证"><button class="btn-submit" id="saveProfileBtn">💾 保存</button><div id="profMsg" style="font-size:13px;margin-top:8px;"></div></div><div class="post-area" style="max-width:500px;margin:0 auto;"><h3 style="margin-bottom:12px;">📦 我的购买记录</h3><div id="myPurchases">加载中...</div></div>';
+document.getElementById('saveProfileBtn').addEventListener('click',async()=>{
+const real=document.getElementById('profReal').value.trim();
+const cls=document.getElementById('profClass').value.trim();
+const pwd=document.getElementById('profPwd').value;
+const msg=document.getElementById('profMsg');
+if(!pwd){msg.style.color='#DC2626';msg.textContent='请输入密码';return;}
+const {data,error}=await sb.rpc('update_profile',{p_username:u.username,p_password:pwd,p_realname:real,p_class:cls});
+if(error||!data.ok){msg.style.color='#DC2626';msg.textContent=(data&&data.error)||error.message;return;}
+u.real_name=real;u.class_name=cls;setCurrentUser(u);
+msg.style.color='#059669';msg.textContent='保存成功';
+});
+const {data}=await sb.from('purchases').select('*').eq('username',u.username).order('id',{ascending:false}).limit(50);
+const pbox=document.getElementById('myPurchases');
+if(!data||!data.length){pbox.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无购买记录</p>';return;}
+pbox.innerHTML=data.map(r=>'<div style="padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;"><strong>'+esc(r.product_name)+'</strong> · '+r.price+'元<br><span style="font-size:12px;color:#9CA3AF;">'+fmt(r.created_at)+'</span></div>').join('');
+}
+
+/* ============ 论坛系统 ============ */
+let isAdmin=sessionStorage.getItem("isAdmin")==="1";
+
+async function loadPosts(){
+const box=document.getElementById("forumPosts");
+if(!box)return;
+const {data,error}=await sb.from("messages").select("*").order("id",{ascending:false}).limit(200);
+if(error){box.innerHTML='<p style="text-align:center;color:#ff3b30;">加载失败：'+esc(error.message)+'</p>';return;}
+if(!data.length){box.innerHTML='<p style="text-align:center;color:#9CA3AF;padding:30px 0;">还没有帖子，来发第一条。</p>';return;}
+
+const topPosts=data.filter(p=>!p.parent_id);
+box.innerHTML=topPosts.map(p=>{
+const replies=data.filter(r=>r.parent_id===p.id).sort((a,b)=>a.id-b.id);
+const replyHtml=replies.map(r=>
+'<div class="reply-box"><div class="rmeta"><strong>'+esc(r.name)+'</strong> · '+fmt(r.created_at)+(isHuangKai()?' <button class="del-btn" onclick="delReply('+r.id+')">删除</button>':'')+'</div><div class="rbody">'+esc(r.content)+'</div></div>'
+).join('');
+
+return '<div class="post-area" style="margin-bottreturn '<div class="post-area" style="margin-bottom:12px;">'+
+'<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">'+
+'<span style="font-weight:600;font-size:14px;">'+esc(p.name)+'</span>'+
+'<span style="font-size:12px;color:#86868b;">'+fmt(p.created_at)+(isHuangKai()?' <button class="del-btn" onclick="delPost('+p.id+')">删除</button>':'')+'</span>'+
+'</div>'+
+'<div style="font-size:15px;line-height:1.6;white-space:pre-wrap;word-break:break-word;">'+esc(p.content)+'</div>'+
+'<div class="post-actions">'+
+'<span class="like" onclick="likePost('+p.id+')">👍 '+(p.likes||0)+'</span>'+
+'<span class="reply" onclick="showReply('+p.id+')">💬 回复</span>'+
+'</div>'+
+'<div id="replyBox-'+p.id+'" style="display:none;margin-top:8px;">'+
+'<textarea id="replyContent-'+p.id+'" placeholder="写下你的回复..." style="width:100%;min-height:50px;padding:8px;border:2px solid #E5E7EB;border-radius:8px;font-size:14px;font-family:inherit;"></textarea>'+
+'<button style="background:#4F46E5;color:#fff;border:none;padding:6px 16px;border-radius:8px;font-size:13px;cursor:pointer;margin-top:6px;" onclick="submitReply('+p.id+')">发布回复</button>'+
+'</div>'+replyHtml+'</div>';
+}).join("");
+}
+
+async function likePost(id){
+await sb.rpc('like_message',{msg_id:id});
+loadPosts();
+}
+
+function showReply(id){
+const box=document.getElementById('replyBox-'+id);
+box.style.display=box.style.display==='none'?'block':'none';
+}
+
+async function submitReply(parentId){
+const u=getCurrentUser();
+if(u){
+const {data:me}=await sb.from('users').select('ban_all_until,ban_forum_until').eq('username',u.username).single();
+if(me){
+const now=Date.now();
+if(me.ban_all_until&&new Date(me.ban_all_until).getTime()>now){showToast('🚫 你已被全站封禁至 '+fmt(me.ban_all_until));return;}
+if(me.ban_forum_until&&new Date(me.ban_forum_until).getTime()>now){showToast('🚫 你已被禁止发帖至 '+fmt(me.ban_forum_until));return;}
+}
+}
+const name=u?u.username:(document.getElementById('forumName').value.trim()||'匿名');
+const content=document.getElementById('replyContent-'+parentId).value.trim();
+if(!content)return showToast('回复内容不能为空');
+const {error}=await sb.from('messages').insert({name,content,parent_id:parentId});
+if(error){showToast('回复失败');return;}
+loadPosts();
+}
+
+async function delPost(id){
+if(!isHuangKai()){showToast('⚠️ 只有管理员黄凯能删除');return;}
+if(!confirm("确定删除这条帖子？包括它的所有回复"))return;
+const {error}=await sb.rpc("delete_message",{msg_id:id,pwd:ADMIN_PWD});
+if(error){alert("删除失败："+error.message);return;}
+loadPosts();
+}
+
+async function delReply(id){
+if(!isHuangKai()){showToast('⚠️ 只有管理员黄凯能删除');return;}
+if(!confirm("确定删除这条回复？"))return;
+const {error}=await sb.rpc("delete_anything",{p_table:'messages',p_id:id,pwd:ADMIN_PWD});
+if(error){alert("删除失败："+error.message);return;}
+loadPosts();
+}
+
+async function submitPost(){
+const u=getCurrentUser();
+if(u){
+const {data:me}=await sb.from('users').select('ban_all_until,ban_forum_until').eq('username',u.username).single();
+if(me){
+const now=Date.now();
+if(me.ban_all_until&&new Date(me.ban_all_until).getTime()>now){showToast('🚫 你已被全站封禁至 '+fmt(me.ban_all_until));return;}
+if(me.ban_forum_until&&new Date(me.ban_forum_until).getTime()>now){showToast('🚫 你已被禁止发帖至 '+fmt(me.ban_forum_until));return;}
+}
+}
+const name=u?u.username:(document.getElementById("forumName").value.trim()||"匿名");
+const content=document.getElementById("forumContent").value.trim();
+const tip=document.getElementById("forumMsgTip");
+tip.textContent="";
+if(!content){tip.style.color="#ff3b30";tip.textContent="内容不能为空";return;}
+const {error}=await sb.from("messages").insert({name,content});
+if(error){tip.style.color="#ff3b30";tip.textContent=error.message;return;}
+document.getElementById("forumContent").value="";
+tip.style.color="#34c759";tip.textContent="发布成功";
+loadPosts();
+}
+
+function adminLogin(){
+const pwd=document.getElementById("adminPwd").value;
+const msg=document.getElementById("adminMsg");
+msg.textContent="";
+if(pwd!==ADMIN_PWD){msg.style.color="#ff3b30";msg.textContent="密码错误";return;}
+sessionStorage.setItem("isAdmin","1");
+isAdmin=true;
+updateAdminUI();
+msg.style.color="#34c759";msg.textContent="已进入管理模式";
+loadPosts();
+}
+function adminLogout(){
+sessionStorage.removeItem("isAdmin");
+isAdmin=false;
+updateAdminUI();
+loadPosts();
+document.getElementById("adminMsg").textContent="已退出管理";
+}
+function updateAdminUI(){
+const lb=document.getElementById("adminLogoutBtn");
+const ab=document.getElementById("adminBtn");
+const ap=document.getElementById("adminPwd");
+if(lb)lb.style.display=isAdmin?"inline-block":"none";
+if(ab)ab.style.display=isAdmin?"none":"inline-block";
+if(ap)ap.style.display=isAdmin?"none":"inline-block";
+  }/* ============ 员工专区 ============ */
+async function loadStaffData(){
+const u=getCurrentUser();
+if(!u||(u.role!=='staff'&&u.role!=='admin')){switchPage('home');return;}
+
+const {data:tasks}=await sb.from('tasks').select('*').order('id',{ascending:false});
+document.getElementById('staffSection-tasks').innerHTML=tasks&&tasks.length?tasks.map(t=>
+'<div class="task-card"><h4>'+esc(t.title)+'</h4><div class="meta">负责人：'+esc(t.assignee||'未指定')+' · 更新：'+fmt(t.updated_at)+(isHuangKai()?' <button class="del-btn" onclick="deleteTask('+t.id+')">删除</button>':'')+'</div><div class="body">'+esc(t.content)+'</div></div>'
+).join(''):'<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无任务</p>';
+
+const {data:docs}=await sb.from('documents').select('*').order('id',{ascending:false});
+document.getElementById('staffSection-docs').innerHTML=docs&&docs.length?docs.map(d=>
+'<div class="doc-card"><h4>'+esc(d.title)+'</h4><div class="meta">分类：'+esc(d.category)+' · 更新：'+fmt(d.updated_at)+(isHuangKai()?' <button class="del-btn" onclick="delDocument('+d.id+')">删除</button>':'')+'</div><div class="body">'+esc(d.content)+'</div></div>'
+).join(''):'<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无资料</p>';
+
+loadStaffForum();
+loadStaffSales();
+}
+
+async function loadStaffForum(){
+const box=document.getElementById('staffSection-forum');
+box.innerHTML='<div class="post-area"><textarea id="staffMsg" placeholder="发条消息给同事..." style="min-height:60px;"></textarea><button class="btn-submit" id="staffMsgBtn">发送</button></div><div id="staffMsgList"></div>';
+document.getElementById('staffMsgBtn').addEventListener('click',async()=>{
+const u=getCurrentUser();
+const content=document.getElementById('staffMsg').value.trim();
+if(!content)return showToast('内容不能为空');
+const {error}=await sb.from('staff_messages').insert({username:u.username,role:u.role,content});
+if(error){showToast('发送失败：'+error.message);return;}
+document.getElementById('staffMsg').value='';
+loadStaffForum();
+});
+const {data}=await sb.from('staff_messages').select('*').order('id',{ascending:false}).limit(100);
+document.getElementById('staffMsgList').innerHTML=data&&data.length?data.map(m=>'<div class="msg-bubble"><div class="who">'+esc(m.username)+(m.role==='admin'?'<span class="badge admin">管理员</span>':'<span class="badge staff">员工</span>')+(isHuangKai()?' <button class="del-btn" onclick="delStaffMsg('+m.id+')">删除</button>':'')+'</div><div class="time">'+fmt(m.created_at)+'</div><div class="body">'+esc(m.content)+'</div></div>').join(''):'<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无消息</p>';
+}
+
+async function loadStaffSales(){
+const u=getCurrentUser();
+const box=document.getElementById('staffSection-sales');
+const {data}=await sb.rpc('get_staff_sales',{p_username:u.username});
+if(!data||!data.length){box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂时没有你作品的销售记录</p>';return;}
+box.innerHTML=data.map(r=>'<div class="task-card"><h4>'+esc(r.product_name)+'</h4><div class="meta">已售出 '+r.count+' 份 · 总收入 '+r.total+' 元</div></div>').join('');
+}
+
+/* ============ 管理后台 ============ */
+async function loadAdminData(){
+const u=getCurrentUser();
+if(!u||u.role!=='admin'){switchPage('home');return;}
+
+const {data:users}=await sb.from('users').select('*').order('id',{ascending:false});
+const ubox=document.getElementById('adminSection-users');
+ubox.innerHTML='<p style="margin-bottom:12px;color:#6B7280;">共 '+users.length+' 位用户</p>'+users.map(x=>'<div class="user-card"><div class="uname">'+esc(x.username)+(x.role==='admin'?' 🔴':x.role==='staff'?' 🟢':'')+'</div><div class="umeta">真名：'+esc(x.real_name)+' · 班级：'+esc(x.class_name||'未填')+' · 注册：'+fmt(x.created_at)+'</div><div class="uactions">'+(x.role==='user'?'<button class="promote" onclick="promoteUser(\''+x.username+'\')">升为员工</button>':'')+(x.role==='staff'?'<button class="demote" onclick="demoteUser(\''+x.username+'\')">降为普通</button>':'')+'</div></div>').join('');
+
+const {data:purs}=await sb.from('purchases').select('*').order('id',{ascending:false}).limit(200);
+document.getElementById('adminSection-purchases').innerHTML=purs&&purs.length?purs.map(r=>'<div class="user-card"><div class="uname">'+esc(r.product_name)+' · '+r.price+'元</div><div class="umeta">买家：'+esc(r.buyer_name)+'（'+esc(r.buyer_class||'未填')+'） · 作者：'+esc(r.author||'—')+' · '+fmt(r.created_at)+'</div></div>').join(''):'<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无交易</p>';
+
+document.getElementById('adminSection-tasks').innerHTML='<div class="post-area"><h3>新建/编辑任务</h3><label>标题</label><input id="taskTitle"><label>内容</label><textarea id="taskContent"></textarea><label>负责人</label><input id="taskAssignee"><button class="btn-submit" id="saveTaskBtn">保存任务</button></div><div id="adminTaskList"></div>';
+const {data:tasks}=await sb.from('tasks').select('*').order('id',{ascending:false});
+document.getElementById('adminTaskList').innerHTML=tasks&&tasks.length?tasks.map(t=>'<div class="task-card"><h4>'+esc(t.title)+'</h4><div class="meta">'+esc(t.assignee||'')+' · '+fmt(t.updated_at)+(isHuangKai()?' <button class="del-btn" onclick="deleteTask('+t.id+')">删除</button>':'')+'</div><div class="body">'+esc(t.content)+'</div></div>').join(''):'';
+document.getElementById('saveTaskBtn').addEventListener('click',async()=>{
+const t=document.getElementById('taskTitle').value.trim();
+const c=document.getElementById('taskContent').value.trim();
+const a=document.getElementById('taskAssignee').value.trim();
+if(!t||!c)return showToast('标题和内容不能为空');
+const {data,error}=await sb.rpc('save_task',{p_admin_name:u.username,p_admin_pwd:ADMIN_PWD,p_id:null,p_title:t,p_content:c,p_assignee:a});
+if(error||!data.ok){showToast('保存失败');return;}
+showToast('保存成功');loadAdminData();
+});
+
+document.getElementById('adminSection-docs').innerHTML='<div class="post-area"><h3>新建/编辑资料</h3><label>标题</label><input id="docTitle"><label>分类</label><input id="docCategory" placeholder="如：制度 / 项目"><label>内容</label><textarea id="docContent"></textarea><button class="btn-submit" id="saveDocBtn">保存资料</button></div><div id="adminDocList"></div>';
+const {data:docs2}=await sb.from('documents').select('*').order('id',{ascending:false});
+document.getElementById('adminDocList').innerHTML=docs2&&docs2.length?docs2.map(d=>
+'<div class="doc-card"><h4>'+esc(d.title)+'</h4><div class="meta">'+esc(d.category)+' · '+fmt(d.updated_at)+(isHuangKai()?' <button class="del-btn" onclick="delDocument('+d.id+')">删除</button>':'')+'</div><div class="body">'+esc(d.content)+'</div></div>'
+).join(''):'<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无资料</p>';
+document.getElementById('saveDocBtn').addEventListener('click',async()=>{
+const t=document.getElementById('docTitle').value.trim();
+const c=document.getElementById('docContent').value.trim();
+const cat=document.getElementById('docCategory').value.trim()||'general';
+if(!t||!c)return showToast('标题和内容不能为空');
+const {data,error}=await sb.rpc('save_document',{p_admin_name:u.username,p_admin_pwd:ADMIN_PWD,p_id:null,p_title:t,p_content:c,p_category:cat});
+if(error||!data.ok){showToast('保存失败');return;}
+showToast('保存成功');loadAdminData();
+});
+}
+
+async function promoteUser(username){
+const u=getCurrentUser();
+const {data,error}=await sb.rpc('promote_to_staff',{p_admin:u.username,p_pwd:ADMIN_PWD,p_target:username});
+if(error||!data.ok){showToast('操作失败');return;}
+showToast('已升级为员工');loadAdminData();
+}
+async function demoteUser(username){
+const u=getCurrentUser();
+const {data,error}=await sb.rpc('demote_to_user',{p_admin:u.username,p_pwd:ADMIN_PWD,p_target:username});
+if(error||!data.ok){showToast('操作失败');return;}
+showToast('已降为普通用户');loadAdminData();
+}
+async function deleteTask(id){
+if(!isHuangKai()){showToast('⚠️ 只有管理员黄凯能删除');return;}
+if(!confirm('确定删除？'))return;
+const {error}=await sb.rpc('delete_anything',{p_table:'tasks',p_id:id,pwd:ADMIN_PWD});
+if(error){alert('删除失败：'+error.message);return;}
+loadStaffData();
+}
+async function delStaffMsg(id){
+if(!isHuangKai()){showToast('⚠️ 只有管理员黄凯能删除');return;}
+if(!confirm('确定删除这条消息？'))return;
+const {error}=await sb.rpc('delete_anything',{p_table:'staff_messages',p_id:id,pwd:ADMIN_PWD});
+if(error){alert('删除失败：'+error.message);return;}
+loadStaffForum();
+}
+async function delDocument(id){
+if(!isHuangKai()){showToast('⚠️ 只有管理员黄凯能删除');return;}
+if(!confirm('确定删除这份资料？'))return;
+const {error}=await sb.rpc('delete_anything',{p_table:'documents',p_id:id,pwd:ADMIN_PWD});
+if(error){alert('删除失败：'+error.message);return;}
+loadStaffData();
+}
+
+/* ============ 惩罚管理 ============ */
+let punishTargetUser=null;
+
+async function loadAdminPunish(){
+const u=getCurrentUser();
+if(!u||u.role!=='admin')return;
+const box=document.getElementById('adminSection-punish');
+box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">加载中...</p>';
+const {data,error}=await sb.from('users').select('username,real_name,class_name,role,ban_all_until,ban_chat_until,ban_forum_until').order('id',{ascending:false});
+if(error){box.innerHTML='<p style="color:#ff3b30;text-align:center;padding:20px 0;">加载失败：'+esc(error.message)+'</p>';return;}
+if(!data||!data.length){box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无用户</p>';return;}
+
+const now=Date.now();
+const canP=canPunish();
+box.innerHTML='<p style="margin-bottom:12px;color:#6B7280;">共 '+data.length+' 位用户 · 只有管理员黄凯能执行封禁</p>'+
+data.map(x=>{
+const allBan=x.ban_all_until&&new Date(x.ban_all_until).getTime()>now;
+const chatBan=x.ban_chat_until&&new Date(x.ban_chat_until).getTime()>now;
+const forumBan=x.ban_forum_until&&new Date(x.ban_forum_until).getTime()>now;
+const isSelf=x.username==='黄凯';
+let badges='';
+if(allBan)badges+='<span style="background:#DC2626;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:6px;">全站封禁至 '+fmt(x.ban_all_until)+'</span>';
+if(chatBan)badges+='<span style="background:#F59E0B;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:6px;">禁私信至 '+fmt(x.ban_chat_until)+'</span>';
+if(forumBan)badges+='<span style="background:#8B5CF6;color:#fff;font-size:11px;padding:2px 8px;border-radius:10px;margin-left:6px;">禁论坛至 '+fmt(x.ban_forum_until)+'</span>';
+let actions='';
+if(canP){
+if(isSelf){actions='<span style="font-size:13px;color:#9CA3AF;">不能对自己操作</span>';}
+else{
+actions='<button class="demote" style="background:#DC2626;color:#fff;" onclick="openPunish(\''+esc(x.username)+'\')">🔨 惩罚</button>';
+if(allBan||chatBan||forumBan)actions+='<button class="promote" onclick="unpunish(\''+esc(x.username)+'\')">✅ 解除</button>';
+}
+}else{
+actions='<span style="font-size:13px;color:#9CA3AF;">仅管理员黄凯可操作</span>';
+}
+return '<div class="user-card"><div class="uname">'+esc(x.username)+(x.role==='admin'?' 🔴':x.role==='staff'?' 🟢':'')+badges+'</div><div class="umeta">真名：'+esc(x.real_name||'—')+' · 班级：'+esc(x.class_name||'未填')+'</div><div class="uactions">'+actions+'</div></div>';
+}).join('');
+}
+
+function openPunish(username){
+punishTargetUser=username;
+const box=document.getElementById('adminSection-punish');
+box.innerHTML='<div class="post-area" style="max-width:520px;margin:0 auto;">'+
+'<h3 style="margin-bottom:12px;">🔨 惩罚用户：'+esc(username)+'</h3>'+
+'<label>惩罚类型</label>'+
+'<select id="punishType" style="width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;margin-top:4px;font-family:inherit;background:#FAFAFA;">'+
+'<option value="chat">禁私信（不能发消息）</option>'+
+'<option value="forum">禁论坛（不能发帖回复）</option>'+
+'<option value="all">全站封禁（禁私信+论坛）</option>'+
+'</select>'+
+'<label>封禁时长</label>'+
+'<select id="punishDuration" style="width:100%;padding:10px 14px;border:2px solid #E5E7EB;border-radius:10px;font-size:15px;margin-top:4px;font-family:inherit;background:#FAFAFA;">'+
+'<option value="1">1 小时</option>'+
+'<option value="24">1 天</option>'+
+'<option value="48">2 天</option>'+
+'<option value="72">3 天</option>'+
+'<option value="168">7 天</option>'+
+'<option value="720">30 天</option>'+
+'<option value="87600">10 年（永久）</option>'+
+'</select>'+
+'<label>原因（可选）</label>'+
+'<input id="punishReason" placeholder="如：辱骂、刷屏">'+
+'<div class="btn-group" style="display:flex;gap:12px;margin-top:22px;">'+
+'<button class="btn-cancel" style="flex:1;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;background:#F3F4F6;color:#4B5563;" onclick="loadAdminPunish()">取消</button>'+
+'<button class="btn-confirm" style="flex:1;padding:12px;border:none;border-radius:12px;font-size:15px;font-weight:600;cursor:pointer;background:#DC2626;color:#fff;" onclick="doPunish()">确认封禁</button>'+
+'</div></div>';
+}
+
+async function doPunish(){
+if(!canPunish()){showToast('⚠️ 只有管理员黄凯能执行封禁');return;}
+const type=document.getElementById('punishType').value;
+const hours=parseInt(document.getElementById('punishDuration').value,10);
+const reason=document.getElementById('punishReason').value.trim();
+const {data,error}=await sb.rpc('punish_user',{
+p_admin:ADMIN_NAME,
+p_pwd:ADMIN_PWD,
+p_target:punishTargetUser,
+p_type:type,
+p_hours:hours,
+p_reason:reason
+});
+if(error||!data.ok){showToast('❌ 封禁失败：'+((data&&data.error)||error.message));return;}
+showToast('✅ 已封禁 '+punishTargetUser);
+loadAdminPunish();
+}
+
+async function unpunish(username){
+if(!canPunish()){showToast('⚠️ 只有管理员黄凯能解除封禁');return;}
+if(!confirm('确定解除 '+username+' 的所有封禁？'))return;
+const {data,error}=await sb.rpc('unpunish_user',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_target:username});
+if(error||!data.ok){showToast('❌ 解除失败：'+((data&&data.error)||error.message));return;}
+showToast('✅ 已解除封禁');
+loadAdminPunish();
+}
+
+/* ============ 举报处理（看对话 + 警告/封禁/假举报） ============ */
+async function loadAdminReports(){
+const u=getCurrentUser();
+if(!u||u.role!=='admin')return;
+const box=document.getElementById('adminSection-reports');
+box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">加载中...</p>';
+const {data,error}=await sb.rpc('get_reports',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD});
+if(error){box.innerHTML='<p style="color:#ff3b30;text-align:center;padding:20px 0;">加载失败：'+esc(error.message)+'</p>';return;}
+if(!datif(!data||!data.length){box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无举报</p>';return;}
+
+const canP=canPunish();
+box.innerHTML='<p style="margin-bottom:12px;color:#6B7280;">共 '+data.length+' 条举报</p>'+
+data.map(r=>{
+const badge=r.status==='pending'?'待处理':r.status==='handled'?'已处理':'已忽略';
+const badgeColor=r.status==='pending'?'#F59E0B':(r.status==='handled'?'#10B981':'#9CA3AF');
+return '<div class="task-card" id="reportCard-'+r.id+'">'+
+'<h4>举报人：'+esc(r.reporter)+' → 被举报：'+esc(r.target_user||'-')+'</h4>'+
+'<div class="meta">目标：'+esc(r.target_type)+' #'+(r.target_id||'-')+' · '+fmt(r.created_at)+'</div>'+
+'<div class="body">理由：'+esc(r.reason||'（未填）')+'</div>'+
+'<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center;">'+
+'<span style="padding:2px 8px;border-radius:6px;font-size:12px;background:'+badgeColor+';color:#fff;">'+badge+'</span>'+
+'<button class="req-accept" style="background:#4F46E5;color:#fff;" onclick="toggleReportContext('+r.id+')">📄 查看对话</button>'+
+(r.status==='pending'&&canP?
+'<button class="req-reject" onclick="handleReport('+r.id+',\'handled\')">✅ 已处理</button>'+
+'<button class="req-reject" onclick="handleReport('+r.id+',\'ignored\')">忽略</button>'+
+'<button style="background:#F59E0B;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;" onclick="warnUser(\''+esc(r.target_user)+'\')">⚠️ 警告</button>'+
+'<button style="background:#DC2626;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;" onclick="openPunish(\''+esc(r.target_user)+'\')">🔨 封禁</button>'+
+'<button style="background:#6B7280;color:#fff;border:none;padding:5px 12px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;" onclick="falseReport('+r.id+',\''+esc(r.reporter)+'\')">🚫 假举报</button>'
+:'')+
+'</div>'+
+'<div id="reportCtx-'+r.id+'" style="display:none;margin-top:12px;padding:12px;background:#FAFAFA;border-radius:10px;"></div>'+
+'</div>';
+}).join('');
+}
+
+async function toggleReportContext(reportId){
+const box=document.getElementById('reportCtx-'+reportId);
+if(box.style.display==='block'){box.style.display='none';return;}
+box.style.display='block';
+box.innerHTML='<div class="spinner" style="width:24px;height:24px;border-width:3px;"></div>';
+const {data,error}=await sb.rpc('get_report_context',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_report_id:reportId});
+if(error||!data.ok){box.innerHTML='<p style="color:#ff3b30;">加载失败：'+esc((data&&data.error)||error.message)+'</p>';return;}
+const msgs=(data.messages||[]).slice().reverse();
+if(!msgs.length){box.innerHTML='<p style="color:#9CA3AF;">双方无对话记录</p>';return;}
+box.innerHTML='<div style="font-size:13px;color:#6B7280;margin-bottom:8px;">对话记录（'+esc(data.reporter)+' ↔ '+esc(data.target_user)+'）</div>'+
+msgs.map(m=>{
+const isReporter=m.user_a===data.reporter;
+return '<div style="margin-bottom:8px;text-align:left;">'+
+'<span style="font-size:12px;color:'+(isReporter?'#4F46E5':'#DC2626')+';font-weight:600;">'+esc(m.user_a)+'</span>'+
+'<span style="font-size:11px;color:#9CA3AF;margin-left:6px;">'+fmt(m.created_at)+'</span>'+
+(m.status==='blocked'?'<span style="font-size:11px;color:#DC2626;margin-left:6px;">[已屏蔽]</span>':'')+
+(m.status==='pending_review'?'<span style="font-size:11px;color:#D97706;margin-left:6px;">[待审核]</span>':'')+
+'<div style="background:#fff;border:1px solid #eee;border-radius:8px;padding:8px 10px;margin-top:4px;font-size:14px;white-space:pre-wrap;word-break:break-word;">'+esc(m.content)+'</div>'+
+'</div>';
+}).join('');
+}
+
+async function warnUser(username){
+if(!canPunish()){showToast('⚠️ 只有管理员黄凯能操作');return;}
+if(!username||username==='-'){showToast('无效用户');return;}
+if(!confirm('确定警告 '+username+' ？（仅记录，不封禁）'))return;
+const {data,error}=await sb.rpc('warn_user',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_target:username,p_reason:''});
+if(error||!data.ok){showToast('操作失败');return;}
+showToast('✅ 已警告 '+username);
+loadAdminReports();
+}
+
+async function falseReport(reportId,reporter){
+if(!canPunish()){showToast('⚠️ 只有管理员黄凯能操作');return;}
+if(!confirm('确定判定为假举报？将警告举报人 '+reporter))return;
+await sb.rpc('handle_report',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_report_id:reportId,p_action:'ignored'});
+await sb.rpc('warn_user',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_target:reporter,p_reason:'假举报'});
+showToast('✅ 已判定假举报，警告 '+reporter);
+loadAdminReports();
+}
+
+async function handleReport(id,action){
+const {data,error}=await sb.rpc('handle_report',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_report_id:id,p_action:action});
+if(error||!data.ok){showToast('操作失败');return;}
+showToast('已处理');
+loadAdminReports();
+}
+
+async function loadAdminReview(){
+const u=getCurrentUser();
+if(!u||u.role!=='admin')return;
+const box=document.getElementById('adminSection-review');
+box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">加载中...</p>';
+const {data,error}=await sb.from('social').select('*').eq('type','message').eq('status','pending_review').order('created_at',{ascending:true});
+if(error){box.innerHTML='<p style="color:#ff3b30;text-align:center;padding:20px 0;">加载失败：'+esc(error.message)+'</p>';return;}
+if(!data||!data.length){box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无待审核消息</p>';return;}
+box.innerHTML='<p style="margin-bottom:12px;color:#6B7280;">共 '+data.length+' 条待审核</p>'+data.map(m=>'<div class="task-card"><h4>'+esc(m.user_a)+' → '+esc(m.user_b)+'</h4><div class="meta">'+fmt(m.created_at)+'</div><div class="body">'+esc(m.content)+'</div><div style="margin-top:10px;display:flex;gap:8px;"><button class="req-accept" onclick="reviewMessage('+m.id+',\'approved\')">✅ 通过</button><button class="req-reject" onclick="reviewMessage('+m.id+',\'blocked\')">🚫 屏蔽</button><button class="del-btn" onclick="deleteSocial('+m.id+')">删除</button></div></div>').join('');
+}
+
+async function reviewMessage(id,status){
+await sb.from('social').update({status}).eq('id',id);
+showToast('已处理');
+loadAdminReview();
+}
+
+async function deleteSocial(id){
+if(!confirm('确定删除这条消息？'))return;
+const {data,error}=await sb.rpc('delete_social',{p_admin:ADMIN_NAME,p_pwd:ADMIN_PWD,p_id:id});
+if(error||!data.ok){showToast('删除失败');return;}
+showToast('已删除');
+loadAdminReview();
+  }/* ============ 交友系统 ============ */
+let currentChatUser=null;
+let friendsLoaded=false;
+
+async function loadFriendsPage(){
+const u=getCurrentUser();
+if(!u){showToast('请先登录');switchPage('login');return;}
+const loading=document.getElementById('friendsLoading');
+const content=document.getElementById('friendsContent');
+if(!friendsLoaded){
+loading.classList.remove('hidden');
+content.classList.add('hidden');
+await new Promise(r=>setTimeout(r,800));
+}
+try{
+const {data:reqs}=await sb.rpc('get_friend_requests',{p_user:u.username});
+const {data:friends}=await sb.rpc('get_friends',{p_user:u.username});
+
+const reqBox=document.getElementById('friendRequestsBox');
+const reqList=document.getElementById('friendRequestsList');
+if(reqs&&reqs.length){
+reqBox.classList.remove('hidden');
+reqList.innerHTML=reqs.map(r=>'<div class="friend-item" style="cursor:default;"><div><div class="fname">'+esc(r.from_user)+'</div><div class="flast">'+fmt(r.created_at)+'</div></div><div class="req-actions"><button class="req-accept" onclick="acceptFriend(\''+esc(r.from_user)+'\')">同意</button><button class="req-reject" onclick="rejectFriend(\''+esc(r.from_user)+'\')">拒绝</button></div></div>').join('');
+}else{
+reqBox.classList.add('hidden');
+}
+
+const fl=document.getElementById('friendsList');
+if(friends&&friends.length){
+fl.innerHTML=friends.map(f=>'<div class="friend-item" onclick="openChat(\''+esc(f.friend_name)+'\')"><div class="fname">'+esc(f.friend_name)+'</div><div class="fright">💬</div></div>').join('');
+}else{
+fl.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">还没有好友，先添加一个吧</p>';
+}
+
+await loadChatList(u.username);
+friendsLoaded=true;
+}catch(e){
+showToast('加载失败：'+e.message);
+}
+loading.classList.add('hidden');
+content.classList.remove('hidden');
+}
+
+async function loadChatList(me){
+const box=document.getElementById('chatList');
+const {data:msgs}=await sb.from('social').select('*').eq('type','message').eq('status','approved').or('user_a.eq.'+me+',user_b.eq.'+me).order('created_at',{ascending:false}).limit(200);
+const {data:unreadMsgs}=await sb.from('social').select('*').eq('type','message').eq('status','unread').eq('user_b',me);
+const unreadMap={};
+(unreadMsgs||[]).forEach(m=>{unreadMap[m.user_a]=(unreadMap[m.user_a]||0)+1;});
+const lastMap={};
+(msgs||[]).forEach(m=>{const other=m.user_a===me?m.user_b:m.user_a;if(!lastMap[other])lastMap[other]=m;});
+const keys=Object.keys(lastMap);
+if(!keys.length){box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:20px 0;">暂无会话</p>';return;}
+box.innerHTML=keys.map(k=>{
+const m=lastMap[k];
+const un=unreadMap[k]||0;
+return '<div class="friend-item" onclick="openChat(\''+esc(k)+'\')"><div><div class="fname">'+esc(k)+(un?' <span class="unread-num">'+un+'</span>':'')+'</div><div class="flast">'+esc(m.content||'')+'</div></div><div class="fright"><span style="font-size:12px;color:#9CA3AF;">'+fmt(m.created_at)+'</span></div></div>';
+}).join('');
+}
+
+async function addFriend(){
+const u=getCurrentUser();
+if(!u){showToast('请先登录');return;}
+const target=document.getElementById('addFriendInput').value.trim();
+if(!target){showToast('请输入用户名');return;}
+if(target===u.username){showToast('不能加自己');return;}
+const {data,error}=await sb.rpc('send_friend_request',{p_from:u.username,p_to:target});
+if(error||!data.ok){showToast((data&&data.error)||error.message);return;}
+showToast('申请已发送');
+document.getElementById('addFriendInput').value='';
+loadFriendsPage();
+}
+
+async function acceptFriend(from){
+const u=getCurrentUser();
+const {data,error}=await sb.rpc('accept_friend',{p_user:u.username,p_target:from});
+if(error||!data.ok){showToast((data&&data.error)||error.message);return;}
+showToast('已同意');loadFriendsPage();
+}
+
+async function rejectFriend(from){
+const u=getCurrentUser();
+const {data,error}=await sb.rpc('reject_friend',{p_user:u.username,p_target:from});
+if(error||!data.ok){showToast((data&&data.error)||error.message);return;}
+showToast('已拒绝');loadFriendsPage();
+}
+
+async function openChat(username){
+currentChatUser=username;
+switchPage('chat');
+}
+
+async function renderChatPage(){
+const u=getCurrentUser();
+if(!u||!currentChatUser){switchPage('friends');return;}
+document.getElementById('chatTitle').textContent=currentChatUser;
+const box=document.getElementById('chatBox');
+box.innerHTML='<div class="spinner"></div>';
+
+// 先查封禁状态
+const {data:me}=await sb.from('users').select('ban_all_until,ban_chat_until').eq('username',u.username).single();
+const bar=document.querySelector('.chat-input-bar');
+let banned=false;
+if(me){
+const now=Date.now();
+const allBan=me.ban_all_until&&new Date(me.ban_all_until).getTime()>now;
+const chatBan=me.ban_chat_until&&new Date(me.ban_chat_until).getTime()>now;
+if(allBan||chatBan){
+banned=true;
+const until=allBan?me.ban_all_until:me.ban_chat_until;
+const label=allBan?'全站封禁':'禁止私信';
+if(bar)bar.innerHTML='<div style="flex:1;padding:11px 14px;background:#FEE2E2;color:#991B1B;border-radius:10px;font-size:14px;text-align:center;">🚫 你已被'+label+'至 '+fmt(until)+'，无法发送消息</div>';
+}
+}
+if(!banned&&bar&&!document.getElementById('chatInput')){
+bar.innerHTML='<input id="chatInput" placeholder="输入消息…" maxlength="500" onkeydown="if(event.key===\'Enter\')sendChatMsg()"><button onclick="sendChatMsg()">发送</button>';
+}
+
+const {data,error}=await sb.rpc('get_messages',{p_user:u.username,p_other:currentChatUser});
+if(error){box.innerHTML='<p style="color:#ff3b30;text-align:center;padding:20px 0;">加载失败：'+esc(error.message)+'</p>';return;}
+if(!data||!data.length){box.innerHTML='<p style="color:#9CA3AF;text-align:center;padding:40px 0;">还没有消息，打个招呼吧</p>';}
+else{
+box.innerHTML=data.map(m=>{
+const isMe=m.from_user===u.username;
+const cls=m.status==='pending_review'?'pending':(m.status==='blocked'?'blocked':'');
+const tip=m.status==='pending_review'?'<span class="bstatus">审核中</span>':(m.status==='blocked'?'<span class="bstatus">已屏蔽</span>':'');
+return '<div class="chat-msg '+(isMe?'me':'other')+'"><div class="chat-bubble '+cls+'" onclick="openReportMsg('+m.id+')">'+esc(m.content)+tip+'</div></div>';
+}).join('');
+}
+box.scrollTop=box.scrollHeight;
+await sb.rpc('mark_messages_read',{p_user:u.username,p_other:currentChatUser}).catch(()=>{});
+}
+
+async function sendChatMsg(){
+const u=getCurrentUser();
+if(!u||!currentChatUser){showToast('请先登录');return;}
+const input=document.getElementById('chatInput');
+if(!input)return;
+const content=input.value.trim();
+if(!content)return;
+
+// 发送前查封禁
+const {data:me}=await sb.from('users').select('ban_all_until,ban_chat_until').eq('username',u.username).single();
+if(me){
+const now=Date.now();
+if(me.ban_all_until&&new Date(me.ban_all_until).getTime()>now){showToast('🚫 你已被全站封禁至 '+fmt(me.ban_all_until)+'，无法发送消息');return;}
+if(me.ban_chat_until&&new Date(me.ban_chat_until).getTime()>now){showToast('🚫 你已被禁止私信至 '+fmt(me.ban_chat_until));return;}
+}
+
+input.value='';
+const {data,error}=await sb.rpc('send_message',{p_from:u.username,p_to:currentChatUser,p_content:content});
+if(error){showToast('发送失败：'+error.message);return;}
+if(data&&data.status=if(data&&data.status==='blocked'){showToast('⚠️ 消息含违规词，已屏蔽');}
+else if(data&&data.status==='pending_review'){showToast('消息待管理员审核');}
+renderChatPage();
+}
+
+/* ============ 举报 ============ */
+let reportTargetData=null;
+function openReportCurrentUser(){
+if(!currentChatUser)return;
+reportTargetData={type:'user',id:null,user:currentChatUser};
+document.getElementById('reportTarget').textContent='举报用户：'+currentChatUser;
+document.getElementById('reportReason').value='';
+document.getElementById('reportOverlay').classList.add('show');
+}
+function openReportMsg(msgId){
+reportTargetData={type:'message',id:msgId,user:currentChatUser};
+document.getElementById('reportTarget').textContent='举报消息 #'+msgId;
+document.getElementById('reportReason').value='';
+document.getElementById('reportOverlay').classList.add('show');
+}
+function closeReport(){
+document.getElementById('reportOverlay').classList.remove('show');
+reportTargetData=null;
+}
+document.getElementById('reportOverlay').addEventListener('click',e=>{
+if(e.target===document.getElementById('reportOverlay'))closeReport();
+});
+async function submitReport(){
+const u=getCurrentUser();
+if(!u||!reportTargetData){showToast('请先登录');return;}
+const reason=document.getElementById('reportReason').value.trim();
+if(!reason){showToast('请填写举报理由');return;}
+const {data,error}=await sb.rpc('submit_report',{
+p_reporter:u.username,
+p_target_target_type:reportTargetData.type,
+p_target_id:reportTargetData.id,
+p_target_user:reportTargetData.user,
+p_reason:reason
+});
+if(error){showToast('举报失败：'+error.message);return;}
+showToast('✅ 举报已提交，等待管理员处理');
+closeReport();
+}
+
+/* ============ 管理 tab 切换兼容 ============ */
+document.querySelectorAll('.staff-tabs button').forEach(btn=>{
+btn.addEventListener('click',function(){
+const tab=this.dataset.staffTab||this.dataset.adminTab;
+const parent=this.closest('#page-staff,#page-admin');
+parent.querySelectorAll('.staff-tabs button').forEach(b=>b.classList.remove('active'));
+this.classList.add('active');
+parent.querySelectorAll('.staff-section').forEach(s=>s.classList.remove('active'));
+const prefix=parent.id==='page-staff'?'staffSection-':'adminSection-';
+document.getElementById(prefix+tab).classList.add('active');
+if(tab==='review')loadAdminReview();
+if(tab==='reports')loadAdminReports();
+if(tab==='punish')loadAdminPunish();
+});
+});
+
+/* ============ 初始化 ============ */
+document.addEventListener('DOMContentLoaded',function(){
+// 禁用浏览器记密码
+document.querySelectorAll('input[type="password"]').forEach(i=>{
+i.setAttribute('autocomplete','new-password');
+i.setAttribute('readonly','readonly');
+i.addEventListener('focus',function(){this.removeAttribute('readonly');});
+});
+
+const fs=document.getElementById('forumSubmit');
+if(fs)fs.addEventListener('click',submitPost);
+const ss=document.getElementById('suggestSubmit');
+if(ss)ss.addEventListener('click',function(){
+const name=document.getElementById('suggestName').value.trim();
+const msg=document.getElementById('suggestMsg').value.trim();
+if(!name)return showToast('⚠️ 请填写署名');
+if(!msg)return showToast('⚠️ 请填写建议内容');
+const now=new Date();
+const timeStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0')+' '+String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+fetch('https://formsubmit.co/ajax/hk_3@qq.com',{
+method:'POST',
+headers:{'Content-Type':'application/json','Accept':'application/json'},
+body:JSON.stringify({_subject:'新建议',署名:name,建议内容:msg,时间:timeStr})
+}).then(r=>{
+if(r.ok){showToast('✅ 建议已发送！');document.getElementById('suggestMsg').value='';}
+else showToast('❌ 发送失败，请重试');
+}).catch(()=>showToast('❌ 网络错误，请重试'));
+});
+updateAdminUI();
+loadPosts();
+});
+
+renderComics();
+updateLoginNav();
+</script>
+</body>
+</html>
