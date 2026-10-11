@@ -1472,5 +1472,218 @@ loadPosts();
 renderComics();
 updateLoginNav();
 </script>
+<!-- ============ 补丁包 v1 ============ -->
+<script>
+(function(){
+'use strict';
+
+/* ============================================
+   工具
+   ============================================ */
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function toast(msg){
+  const t = document.getElementById('toast');
+  if (t){
+    t.textContent = msg;
+    t.classList.add('show');
+    clearTimeout(t._timer);
+    t._timer = setTimeout(()=>t.classList.remove('show'), 3000);
+  } else {
+    alert(msg);
+  }
+}
+
+/* ============================================
+   1. 新分类数据
+   ============================================ */
+const NEW_CATEGORIES = [
+  {name:'😂 搞笑漫画',comics:[
+    {t:'搞笑漫画 #1',p:1,a:'林誉'},
+    {t:'搞笑漫画 #2',p:1,a:'林誉'},
+    {t:'搞笑漫画 #3',p:1,a:'林誉'}
+  ]},
+  {name:'🥟 包子漫画',comics:[
+    {t:'包子漫画 #1',p:1.5,a:''},
+    {t:'包子漫画 #2',p:1.5,a:''},
+    {t:'包子漫画的地图',p:0.5,a:''}
+  ]},
+  {name:'⭐ 包星漫画',comics:Array.from({length:60},(_,i)=>({t:'包星漫画 #'+(i+1),p:1.5,a:'李昀硕'}))},
+  {name:'🍜 美食漫画',comics:[
+    {t:'美食漫画 #1',p:1.5,a:'李昀硕'},
+    {t:'美食漫画 #2',p:1.5,a:'李昀硕'}
+  ]},
+  {name:'🐨 考拉上学记',comics:[
+    {t:'考拉上学记 #1',p:1,a:'李昀硕'}
+  ]},
+  {name:'📜 历史漫画',comics:[
+    {t:'历史漫画 #1',p:1.5,a:''},
+    {t:'历史漫画 #2',p:1.5,a:''}
+  ]},
+  {name:'🎴 历史游戏卡牌',comics:[
+    {t:'历史游戏卡牌 #1',p:1,a:''},
+    {t:'历史游戏卡牌 #2',p:1,a:''}
+  ]},
+  {name:'🎁 经典回归 · 三周年卡包',comics:[
+    {t:'三周年纪念卡包（5张）',p:1,a:''}
+  ]}
+];
+
+/* ============================================
+   2. 重渲染产品页
+   ============================================ */
+function renderNewProducts(){
+  const c = document.getElementById('comicApp');
+  if (!c) return;
+  c.innerHTML = '';
+  c.dataset.rendered = 'true';
+
+  NEW_CATEGORIES.forEach((cat, idx) => {
+    const w = document.createElement('div');
+    w.className = 'category';
+    const h = document.createElement('div');
+    h.className = 'category-header';
+    h.innerHTML = '<h2>'+cat.name+' <span class="count">（'+cat.comics.length+' 部）</span></h2><button class="toggle-btn" data-idx="'+idx+'">展开</button>';
+    w.appendChild(h);
+
+    const list = document.createElement('div');
+    list.className = 'comic-list';
+    list.dataset.idx = idx;
+
+    cat.comics.forEach(x => {
+      const item = document.createElement('div');
+      item.className = 'comic-item';
+      const left = document.createElement('div');
+      left.innerHTML = '<span class="comic-name">'+esc(x.t)+'</span>'+(x.a?'<span class="comic-author">by '+esc(x.a)+'</span>':'')+'<span class="comic-price">'+x.p+'元</span>';
+      const btn = document.createElement('button');
+      btn.className = 'btn-buy';
+      btn.textContent = '购买';
+      btn.addEventListener('click', e => {
+        e.stopPropagation();
+        if (typeof openPurchase === 'function') openPurchase(x.t, x.p, 'comic', x.a);
+        else if (typeof window.openPurchase === 'function') window.openPurchase(x.t, x.p, 'comic', x.a);
+        else toast('请刷新页面后再试');
+      });
+      item.appendChild(left);
+      item.appendChild(btn);
+      list.appendChild(item);
+    });
+
+    w.appendChild(list);
+    c.appendChild(w);
+
+    const tb = h.querySelector('.toggle-btn');
+    tb.addEventListener('click', e => {
+      e.stopPropagation();
+      const open = list.classList.toggle('open');
+      tb.textContent = open ? '收起' : '展开';
+    });
+  });
+}
+
+/* ============================================
+   3. 改导航和标题
+   ============================================ */
+function renameComicToProduct(){
+  document.querySelectorAll('.nav-links a[data-page="comic"]').forEach(a => a.textContent = '产品');
+  const h1 = document.querySelector('#page-comic h1');
+  if (h1) h1.textContent = '📚 产品中心';
+  const sub = document.querySelector('#page-comic .subtitle');
+  if (sub) sub.textContent = '包游文化 · 所有产品与周边';
+}
+
+/* ============================================
+   4. 隐藏活动页的三周年卡包
+   ============================================ */
+function hideActivityCard(){
+  document.querySelectorAll('#page-activity .activity-card').forEach(card => {
+    const text = card.textContent || '';
+    if (text.includes('三周年') || text.includes('纪念卡包')) {
+      card.style.display = 'none';
+    }
+  });
+}
+
+/* ============================================
+   5. 加好友输入校验（XSS 防护）
+   ============================================ */
+const USERNAME_RE = /^[\u4e00-\u9fa5a-zA-Z0-9_]{2,16}$/;
+function wrapAddFriend(){
+  if (typeof window.addFriend !== 'function'){
+    setTimeout(wrapAddFriend, 100);
+    return;
+  }
+  const orig = window.addFriend;
+  window.addFriend = function(){
+    const input = document.getElementById('addFriendInput');
+    const target = input ? input.value.trim() : '';
+    if (!USERNAME_RE.test(target)){
+      toast('用户名只能中英文数字下划线，2-16位');
+      return;
+    }
+    return orig.apply(this, arguments);
+  };
+}
+
+/* ============================================
+   6. 论坛发帖校验（XSS 防护）
+   ============================================ */
+const BAD_RE = /[<>{};]/;
+function wrapSubmitPost(){
+  if (typeof window.submitPost !== 'function'){
+    setTimeout(wrapSubmitPost, 100);
+    return;
+  }
+  const orig = window.submitPost;
+  window.submitPost = function(){
+    const ta = document.getElementById('forumContent');
+    if (ta && BAD_RE.test(ta.value)){
+      toast('内容不能包含 < > { } ; 等符号');
+      return;
+    }
+    return orig.apply(this, arguments);
+  };
+}
+
+/* ============================================
+   7. 注册用户名校验（XSS 防护）
+   ============================================ */
+function wrapRegister(){
+  const btn = document.getElementById('btnRegister');
+  if (!btn){ setTimeout(wrapRegister, 100); return; }
+  if (btn.dataset.wrapped) return;
+  btn.dataset.wrapped = '1';
+  const orig = btn.onclick;
+  btn.addEventListener('click', function(e){
+    const nameEl = document.getElementById('regName');
+    const name = nameEl ? nameEl.value.trim() : '';
+    if (name && !USERNAME_RE.test(name)){
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      toast('用户名只能中英文数字下划线，2-16位');
+    }
+  }, true);
+}
+
+/* ============================================
+   启动
+   ============================================ */
+function boot(){
+  renameComicToProduct();
+  renderNewProducts();
+  hideActivityCard();
+  wrapAddFriend();
+  wrapSubmitPost();
+  wrapRegister();
+  console.log('[补丁] 已加载：产品页/新分类/活动页/输入校验');
+}
+
+if (document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', () => setTimeout(boot, 200));
+} else {
+  setTimeout(boot, 200);
+}
+
+})();
+</script>
 </body>
 </html>
